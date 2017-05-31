@@ -12,6 +12,7 @@ const webpackConfig = process.env.NODE_ENV === 'testing'
 var compiler = webpack(config)
 var server = new WebpackDevServer(compiler, {
   hot: true,
+  historyApiFallback: true,
   filename: config.output.filename,
   publicPath: config.output.publicPath,
   stats: {

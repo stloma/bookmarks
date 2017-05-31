@@ -1,11 +1,12 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Navigation = () => {
   return (
         <div className="navbar navbar-default navbar-fixed-top">
-      <div className="container">
+      <div className="container-fluid">
         <div className="navbar-header">
-          <a href="../" className="navbar-brand">Bootswatch</a>
+          <a href="../" className="navbar-brand">Bookmark Flow</a>
           <button className="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
             <span className="icon-bar"></span>
             <span className="icon-bar"></span>
@@ -15,16 +16,20 @@ const Navigation = () => {
         <div className="navbar-collapse collapse" id="navbar-main">
           <ul className="nav navbar-nav">
             <li>
-              <a href="../help/">Help</a>
             </li>
             <li>
-              <a href="http://news.bootswatch.com">Blog</a>
+              <Link className="btn btn-success" to='/'>Home</Link>
+            </li>
+            <li>
+              <Link className="btn btn-success" to='/login'>Login</Link>
+            </li>
+            <li>
+              <Link className="btn btn-success" to='/content'>Add Site</Link>
             </li>
           </ul>
 
           <ul className="nav navbar-nav navbar-right">
-            <li><a href="http://builtwithbootstrap.com/" target="_blank">Built With Bootstrap</a></li>
-            <li><a href="https://wrapbootstrap.com/?ref=bsw" target="_blank">WrapBootstrap</a></li>
+            <li><a href="http://builtwithbootstrap.com/" target="_blank">Search</a></li>
           </ul>
 
         </div>

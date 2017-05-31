@@ -5,3 +5,18 @@
 .jumbotron {
   text-align: center;
 }
+
+.login-form {
+  width: 80%;
+  margin: auto;
+}
+
+fieldset {
+  width: 80%;
+  margin: auto;
+}
+
+.center {
+  text-align: center;
+  background-color: red;
+}
