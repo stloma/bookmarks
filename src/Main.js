@@ -11,14 +11,14 @@ import {
 import Navigation from './Navigation'
 import LoginForm from './LoginForm'
 import Content from './Content'
-import Landing from './Landing'
+import ShowCards from './ShowCards'
 
 import preload from '../data/data.json'
 
 const Main = () => (
   <div>
     <Switch>
-      <Route exact path='/' component={(props) => <Landing data={preload.sites} />} />
+      <Route exact path='/' component={(props) => <ShowCards data={preload.sites} />} />
       <Route exact path='/login' component={LoginForm}/>
       <Route path='/content' component={Content}/>
     </Switch>

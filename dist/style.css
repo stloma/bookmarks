@@ -20,3 +20,21 @@ fieldset {
   text-align: center;
   background-color: red;
 }
+
+#inputSearchTerm {
+  float: left;
+  width: 50%;
+  margin-left: 6em;
+}
+
+.show-card {
+  border: 1px solid white;
+  margin: 1em;
+  padding: .5em;
+}
+
+.card-title {
+  color: black;
+  background-color: white;
+  padding: 2px;
+}
