@@ -1,30 +1,37 @@
-var path = require('path')
-var webpack = require('webpack')
+const webpack = require('webpack')
+const path = require('path')
 
 module.exports = {
-  entry: [
-    './src/Main.js',
-    'webpack/hot/dev-server',
-    'webpack-dev-server/client?http://127.0.0.1:8080'
-  ],
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ],
+  entry: {
+    app: './src/client/jsx/Router.jsx',
+    vendor: [ 'react', 'react-dom', 'react-router' ]
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/dist/',
-    filename: 'bundle.js'
+    filename: 'js/app.bundle.js'
   },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'js/vendor.bundle.js' })
+  ],
+  devServer: {
+    port: 8000,
+    contentBase: path.join(__dirname, './dist'),
+    proxy: {
+      '/api/*': {
+        target: 'http://127.0.0.1:3000'
+      }
+    },
+    historyApiFallback: true
+  },
+  devtool: 'source-map',
   module: {
     loaders: [
       {
-        test: /\.js$/,
+        test: /\.jsx$/,
         loader: 'babel-loader',
-        include: path.join(__dirname, 'src'),
         query: {
-          presets: ['es2015', 'react']
-        },
-        exclude: /node_modules/
+          presets: ['react', 'es2015']
+        }
       }
     ]
   }

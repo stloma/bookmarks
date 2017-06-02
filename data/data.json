@@ -1,26 +1,27 @@
 {
 
-    "sites": [{
+    "sites": [
+        {
         "title": "Gmail",
         "url": "gmail.com",
         "dateAdded": "May 25, 2017 15:01",
         "author": "lockwood",
         "tags": "email work",
-        "notes": "using this out of necessity now, will transfer to fastmail"
+        "comment": "using this out of necessity now, will transfer to fastmail"
     }, {
         "title": "Fastmail",
         "url": "fastmail.com",
         "dateAdded": "March 7, 2017 08:30",
         "author": "lockwood",
         "tags": "email personal",
-        "notes": "main email app"
+        "comment": "main email app"
     }, {
         "title": "Yahoo",
         "url": "yahoo.com",
         "dateAdded": "April 2, 2015 11:14",
         "author": "lockwood",
         "tags": "email trash",
-        "notes": "why do I still have this? yahoo sucks"
-    }
+        "comment": "why do I still have this? yahoo sucks"
+        }
     ]
 }
