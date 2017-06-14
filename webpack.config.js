@@ -4,7 +4,7 @@ const path = require('path')
 module.exports = {
   entry: {
     app: './src/client/jsx/Router.jsx',
-    vendor: [ 'react', 'react-dom', 'react-router' ]
+    vendor: [ 'react', 'react-dom', 'react-router', 'react-bootstrap', 'react-router-bootstrap' ]
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

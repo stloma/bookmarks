@@ -1,19 +1,22 @@
+/* global fetch */
+
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Glyphicon, Button } from 'react-bootstrap'
 
 function BookmarkTable (props) {
-  const bookmarkRows = props.bookmarks.map(bookmark => <BookmarkRow key={bookmark._id} bookmark={bookmark} />)
+  const bookmarkRows = props.bookmarks.map(bookmark => <BookmarkRow onDeleteClick={props.onDeleteClick} key={bookmark._id} bookmark={bookmark} />)
   return (
-    <table className='bordered-table'>
+    <table className='table table-striped table-hover'>
       <thead>
         <tr>
           <th>Id</th>
           <th>Name</th>
           <th>Url</th>
-          <th>Created</th>
-          <th>Comment</th>
           <th>Tags</th>
-          <th>Delete</th>
+          <th>Comment</th>
+          <th>Created</th>
+          <th />
         </tr>
       </thead>
       <tbody>
@@ -28,10 +31,10 @@ const BookmarkRow = (props) => (
     <td><Link to={`/bookmarks/${props.bookmark._id}`}>{props.bookmark._id.substr(-4)}</Link></td>
     <td>{props.bookmark.name}</td>
     <td>{props.bookmark.url}</td>
-    <td>{new Date(props.bookmark.created).toString()}</td>
-    <td>{props.bookmark.comment}</td>
     <td>{props.bookmark.tags}</td>
-    <td><Link to={`/deletebookmark/${props.bookmark._id}`}>X</Link></td>
+    <td>{props.bookmark.comment}</td>
+    <td>{new Date(props.bookmark.created).toString()}</td>
+    <td><Button bsSize='xsmall' onClick={() => props.onDeleteClick(props.bookmark._id)}><Glyphicon glyph='trash' /></Button></td>
   </tr>
 )
 
@@ -55,6 +58,12 @@ export default class App extends React.Component {
     this.loadData()
   }
 
+  onDeleteClick (id) {
+    fetch(`/api/bookmarks/${id}`, { method: 'DELETE' }).then(response => {
+      if (!response.ok) { console.log('Failed to delete bookmark: ' + id) } else this.loadData()
+    })
+  }
+
   loadData () {
     fetch(`/api/bookmarks`).then(response => {
       if (response.ok) {
@@ -74,8 +83,8 @@ export default class App extends React.Component {
 
   render () {
     return (
-      <div>
-        <BookmarkTable bookmarks={this.state.bookmarks} />
+      <div className='container'>
+        <BookmarkTable onDeleteClick={this.onDeleteClick.bind(this)} bookmarks={this.state.bookmarks} />
       </div>
 
     )

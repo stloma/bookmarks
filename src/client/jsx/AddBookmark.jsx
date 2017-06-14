@@ -1,4 +1,7 @@
+/* globals fetch */
+
 import React from 'react'
+import { Button, Glyphicon } from 'react-bootstrap'
 
 export default class AddBookmark extends React.Component {
   constructor () {
@@ -50,14 +53,32 @@ export default class AddBookmark extends React.Component {
         {/*
         Form is submitting to index, fix
       */}
-        <form action='/' name='SiteAdd' onSubmit={this.handleSubmit}>
-          <input type='text' name='name' placeholder='Name' />
-          <input type='text' name='url' placeholder='Url' />
-          <input type='text' name='comment' placeholder='Comment' />
-          <input type='text' name='tags' placeholder='Comma seperated tags' />
-          <input type='checkbox' name='private' value='private' />
-          <button>Add</button>
-        </form>
+        <div className='container well' id='addbookmark'>
+          <form className='form-horizontal' action='/' name='SiteAdd' onSubmit={this.handleSubmit}>
+            <fieldset>
+              <legend>Create Bookmark</legend>
+
+              <div className='form-group container'>
+                <label className='control-label'>Name</label>
+                <input type='text' className='form-control ' name='name' placeholder='Name' />
+                <label className='control-label'>Url</label>
+                <input type='text' className='form-control' name='url' placeholder='Url' />
+                <label className='control-label'>Comment</label>
+                <input type='text' className='form-control' name='comment' placeholder='Comment' />
+                <label className='control-label'>Tags</label>
+                <input type='text' className='form-control' name='tags' placeholder='Comma seperated (e.g., personal, banking, finance)' />
+                <div className='float-right'>
+                  <div className='form-group'>
+                    <div className='col-lg-10 col-lg-offset-2'>
+                      <button type='reset' className='btn btn-default'>Cancel</button>
+                      <button type='submit' className='btn btn-primary'>Submit</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
       </div>
     )
   }

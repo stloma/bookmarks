@@ -8,7 +8,7 @@ import { Footer } from './Footer.jsx'
 import AddBookmark from './AddBookmark.jsx'
 
 const contentNode = document.querySelector('#root')
-const NoMatch = () => <p>Page Not Found</p>
+const NoMatch = () => <div className='container'><h2>Page Not Found</h2></div>
 
 const Main = () => (
   <Switch>

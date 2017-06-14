@@ -1,6 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { MongoClient } from 'mongodb'
+import { MongoClient, ObjectId } from 'mongodb'
 import Bookmark from './bookmark.js'
 import SourceMapSupport from 'source-map-support'
 import path from 'path'
@@ -36,11 +36,31 @@ app.post('/api/bookmarks', (req, res) => {
     return
   }
 
-  db.collection('bookmarks').insertOne(newSite).then(result =>
-    db.collection('bookmarks').find({ _id: result.insertedId }).limit(1).next()
-    ).then(newSite => {
-      res.json(newSite)
-    }).catch(error => {
+  db.collection('bookmarks').insertOne(newSite)
+    .then(result =>
+      db.collection('bookmarks').find({ _id: result.insertedId }).limit(1).next()
+      ).then(newSite => {
+        res.json(newSite)
+      }).catch(error => {
+        console.log(error)
+        res.status(500).json({ message: `Internal Server Error: ${error}` })
+      })
+})
+
+app.delete('/api/bookmarks/:id', (req, res) => {
+  let bookmarkId
+  try {
+    bookmarkId = new ObjectId(req.params.id)
+  } catch (error) {
+    res.status(422).json({ message: `Invalid issue ID format: ${error}` })
+    return
+  }
+
+  db.collection('bookmarks').deleteOne({ _id: bookmarkId }).then((deleteResult) => {
+    if (deleteResult.result.n === 1) res.json({ status: 'OK' })
+    else res.json({ status: 'Warning: object not found' })
+  })
+    .catch(error => {
       console.log(error)
       res.status(500).json({ message: `Internal Server Error: ${error}` })
     })

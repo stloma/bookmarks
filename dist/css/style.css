@@ -1,0 +1,19 @@
+#addbookmark {
+  max-width: 500px;
+}
+
+#addbookmark input {
+  max-width: 450px;
+  background-color: #999;
+  color: white;
+}
+
+.float-right {
+  max-width: 450px;
+  text-align: right;
+}
+
+#addbookmark button {
+  margin-right: 6px;
+  margin-top: 3em;
+}
