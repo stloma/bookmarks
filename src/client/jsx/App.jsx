@@ -3,6 +3,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Glyphicon, Button } from 'react-bootstrap'
+import { TagCloud } from './TagCloud.jsx'
 
 function BookmarkTable (props) {
   const bookmarkRows = props.bookmarks.map(bookmark => <BookmarkRow onDeleteClick={props.onDeleteClick} key={bookmark._id} bookmark={bookmark} />)
@@ -84,6 +85,7 @@ export default class App extends React.Component {
   render () {
     return (
       <div className='container'>
+        <TagCloud />
         <BookmarkTable onDeleteClick={this.onDeleteClick.bind(this)} bookmarks={this.state.bookmarks} />
       </div>
 

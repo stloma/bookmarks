@@ -4,11 +4,24 @@ import { MongoClient, ObjectId } from 'mongodb'
 import Bookmark from './bookmark.js'
 import SourceMapSupport from 'source-map-support'
 import path from 'path'
+import passport from 'passport'
+import session from 'express-session'
 SourceMapSupport.install()
 
+const LocalStrategy = require('passport-local').Strategy
 const app = express()
 app.use(express.static('dist'))
 app.use(bodyParser.json())
+
+app.use(session({
+  secret: 'secret',
+  saveUninitialized: true,
+  resave: true
+}))
+
+// Passport init
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.get('/api/bookmarks', (req, res) => {
   const filter = {}
