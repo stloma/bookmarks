@@ -3,32 +3,31 @@
 import React from 'react'
 import { Button, Glyphicon } from 'react-bootstrap'
 
-export default class AddBookmark extends React.Component {
+export default class Register extends React.Component {
   constructor () {
     super()
 
-    this.state = ({ bookmarks: [] })
+    this.state = ({ user: [] })
     this.handleSubmit = this.handleSubmit.bind(this)
     this.cancel = this.cancel.bind(this)
   }
 
-  createBookmark (newBookmark) {
-    fetch('/api/bookmarks', {
+  createUser (newUser) {
+    fetch('/api/registeruser', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newBookmark),
-      credentials: 'include'
+      body: JSON.stringify(newUser)
     })
     .then(response => {
       if (response.ok) {
-        response.json().then(updatedBookmark => {
-          updatedBookmark.created = new Date().getTime()
-          const newBookmarks = this.state.bookmarks.concat(updatedBookmark)
-          this.setState({ bookmarks: newBookmarks })
+        response.json().then(updatedUser => {
+          updatedUser.created = new Date().getTime()
+          const newUser = this.state.user.concat(updatedUser)
+          this.setState({ user: newUser })
         })
       } else {
         response.json().then(error => {
-          console.log('Failed to add issue: ' + error.message)
+          console.log('Failed to add user: ' + error.message)
         })
       }
     }).catch(err => {
@@ -38,17 +37,17 @@ export default class AddBookmark extends React.Component {
 
   handleSubmit (event) {
     event.preventDefault()
-    var form = document.forms.SiteAdd
-    this.createBookmark({
+    var form = document.forms.UserAdd
+    this.createUser({
       name: form.name.value,
-      url: form.url.value,
-      comment: form.comment.value,
-      tags: form.tags.value
+      username: form.username.value,
+      email: form.email.value,
+      password: form.password.value
     })
     form.name.value = ''
-    form.url.value = ''
-    form.comment.value = ''
-    this.props.history.push('/')
+    form.username.value = ''
+    form.email.value = ''
+    form.password.value = ''
   }
 
   cancel () {
@@ -56,25 +55,27 @@ export default class AddBookmark extends React.Component {
   }
 
   render () {
+    console.log(this.props)
     return (
       <div>
         {/*
         Form is submitting to index, fix
       */}
-        <div className='container well' id='addbookmark'>
-          <form className='form-horizontal' name='SiteAdd' onSubmit={this.handleSubmit}>
+        <div className='container well' id='register'>
+          <form method='post' className='form-horizontal' name='UserAdd' onSubmit={this.handleSubmit}>
             <fieldset>
-              <legend>Create Bookmark</legend>
+              <legend>Register</legend>
 
               <div className='form-group container'>
                 <label className='control-label'>Name</label>
                 <input type='text' className='form-control ' name='name' placeholder='Name' />
-                <label className='control-label'>Url</label>
-                <input type='text' className='form-control' name='url' placeholder='Url' />
-                <label className='control-label'>Comment</label>
-                <input type='text' className='form-control' name='comment' placeholder='Comment' />
-                <label className='control-label'>Tags</label>
-                <input type='text' className='form-control' name='tags' placeholder='Comma seperated (e.g., personal, banking, finance)' />
+
+                <label className='control-label'>Username</label>
+                <input type='text' className='form-control' name='username' placeholder='Username' />
+                <label className='control-label'>Email</label>
+                <input type='text' className='form-control' name='email' placeholder='Email' />
+                <label className='control-label'>Password</label>
+                <input type='password' className='form-control' name='password' placeholder='Password' />
                 <div className='float-right'>
                   <div className='form-group'>
                     <div className='col-lg-10 col-lg-offset-2'>
