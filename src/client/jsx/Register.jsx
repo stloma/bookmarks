@@ -1,15 +1,19 @@
 /* globals fetch */
 
 import React from 'react'
-import { Button, Glyphicon } from 'react-bootstrap'
+import { Errors } from './Errors.jsx'
 
 export default class Register extends React.Component {
   constructor () {
     super()
 
-    this.state = ({ user: [] })
+    this.state = ({
+      user: [],
+      errors: false
+    })
     this.handleSubmit = this.handleSubmit.bind(this)
     this.cancel = this.cancel.bind(this)
+    this.closeError = this.closeError.bind(this)
   }
 
   createUser (newUser) {
@@ -20,19 +24,20 @@ export default class Register extends React.Component {
     })
     .then(response => {
       if (response.ok) {
-        response.json().then(updatedUser => {
-          updatedUser.created = new Date().getTime()
-          const newUser = this.state.user.concat(updatedUser)
-          this.setState({ user: newUser })
-        })
+        this.props.history.push('/')
       } else {
-        response.json().then(error => {
-          console.log('Failed to add user: ' + error.message)
+        response.json().then(errors => {
+          this.setState({ errors: errors })
         })
       }
     }).catch(err => {
       console.log('Error in sending data to server: ' + err.message)
     })
+  }
+
+  closeError (removeError) {
+    let errors = this.state.errors.filter(error => error !== removeError)
+    this.setState({ errors: errors })
   }
 
   handleSubmit (event) {
@@ -44,10 +49,6 @@ export default class Register extends React.Component {
       email: form.email.value,
       password: form.password.value
     })
-    form.name.value = ''
-    form.username.value = ''
-    form.email.value = ''
-    form.password.value = ''
   }
 
   cancel () {
@@ -55,27 +56,46 @@ export default class Register extends React.Component {
   }
 
   render () {
-    console.log(this.props)
     return (
       <div>
-        {/*
-        Form is submitting to index, fix
-      */}
+        {this.state.errors &&
+        <Errors closeError={this.closeError} errors={this.state.errors} />
+      }
         <div className='container well' id='register'>
-          <form method='post' className='form-horizontal' name='UserAdd' onSubmit={this.handleSubmit}>
+          <form method='post' name='UserAdd' onSubmit={this.handleSubmit}>
             <fieldset>
               <legend>Register</legend>
 
-              <div className='form-group container'>
+              <div className='form-group'>
                 <label className='control-label'>Name</label>
-                <input type='text' className='form-control ' name='name' placeholder='Name' />
+                <input
+                  type='text'
+                  className='form-control'
+                  name='name'
+                  placeholder='Name'
+                />
 
                 <label className='control-label'>Username</label>
-                <input type='text' className='form-control' name='username' placeholder='Username' />
+                <input
+                  type='text'
+                  className='form-control'
+                  name='username'
+                  placeholder='Username'
+                />
                 <label className='control-label'>Email</label>
-                <input type='text' className='form-control' name='email' placeholder='Email' />
+                <input
+                  type='text'
+                  className='form-control'
+                  name='email'
+                  placeholder='Email'
+                />
                 <label className='control-label'>Password</label>
-                <input type='password' className='form-control' name='password' placeholder='Password' />
+                <input
+                  type='password'
+                  className='form-control'
+                  name='password'
+                  placeholder='Password'
+                />
                 <div className='float-right'>
                   <div className='form-group'>
                     <div className='col-lg-10 col-lg-offset-2'>

@@ -35,12 +35,14 @@
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
+    "react-loading": "^0.1.4",
     "react-tagcloud": "^1.2.0",
     "source-map-support": "^0.4.15"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-loader": "^7.0.0",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",

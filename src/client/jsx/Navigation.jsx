@@ -1,15 +1,14 @@
 import React from 'react'
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
+import { Link } from 'react-router-dom'
 import { Logout } from './Logout.jsx'
 
 export const Navigation = (props) => {
   return (
     <Navbar>
       <Navbar.Header>
-        <LinkContainer to='/'>
-          <Navbar.Brand>Bookmark Manager</Navbar.Brand>
-        </LinkContainer>
+        <Navbar.Brand><Link to='/'>Bookmark Manager</Link></Navbar.Brand>
       </Navbar.Header>
       <Nav />
       <Nav pullRight>

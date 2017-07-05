@@ -1,15 +1,18 @@
 /* globals fetch */
 
 import React from 'react'
-import { Button, Glyphicon } from 'react-bootstrap'
+import { Errors } from './Errors.jsx'
 
 export default class AddBookmark extends React.Component {
   constructor () {
     super()
 
-    this.state = ({ bookmarks: [] })
+    this.state = ({
+      errors: false
+    })
     this.handleSubmit = this.handleSubmit.bind(this)
     this.cancel = this.cancel.bind(this)
+    this.closeError = this.closeError.bind(this)
   }
 
   createBookmark (newBookmark) {
@@ -21,14 +24,10 @@ export default class AddBookmark extends React.Component {
     })
     .then(response => {
       if (response.ok) {
-        response.json().then(updatedBookmark => {
-          updatedBookmark.created = new Date().getTime()
-          const newBookmarks = this.state.bookmarks.concat(updatedBookmark)
-          this.setState({ bookmarks: newBookmarks })
-        })
+        this.props.history.push('/')
       } else {
-        response.json().then(error => {
-          console.log('Failed to add issue: ' + error.message)
+        response.json().then(errors => {
+          this.setState({ errors: errors })
         })
       }
     }).catch(err => {
@@ -36,19 +35,20 @@ export default class AddBookmark extends React.Component {
     })
   }
 
+  closeError (removeError) {
+    let errors = this.state.errors.filter(error => error !== removeError)
+    this.setState({ errors: errors })
+  }
+
   handleSubmit (event) {
     event.preventDefault()
-    var form = document.forms.SiteAdd
+    let form = document.forms.SiteAdd
     this.createBookmark({
       name: form.name.value,
       url: form.url.value,
       comment: form.comment.value,
       tags: form.tags.value
     })
-    form.name.value = ''
-    form.url.value = ''
-    form.comment.value = ''
-    this.props.history.push('/')
   }
 
   cancel () {
@@ -58,28 +58,57 @@ export default class AddBookmark extends React.Component {
   render () {
     return (
       <div>
-        {/*
-        Form is submitting to index, fix
-      */}
+        {this.state.errors &&
+        <Errors closeError={this.closeError} errors={this.state.errors} />
+      }
         <div className='container well' id='addbookmark'>
-          <form className='form-horizontal' name='SiteAdd' onSubmit={this.handleSubmit}>
+          <form method='POST' name='SiteAdd' onSubmit={this.handleSubmit}>
             <fieldset>
               <legend>Create Bookmark</legend>
 
-              <div className='form-group container'>
-                <label className='control-label'>Name</label>
-                <input type='text' className='form-control ' name='name' placeholder='Name' />
-                <label className='control-label'>Url</label>
-                <input type='text' className='form-control' name='url' placeholder='Url' />
-                <label className='control-label'>Comment</label>
-                <input type='text' className='form-control' name='comment' placeholder='Comment' />
-                <label className='control-label'>Tags</label>
-                <input type='text' className='form-control' name='tags' placeholder='Comma seperated (e.g., personal, banking, finance)' />
+              <div className='form-group'>
+                <label>Name:</label>
+                <input
+                  autoFocus
+                  type='text'
+                  className='form-control'
+                  name='name'
+                  placeholder='Name'
+                />
+
+                <label>Url:</label>
+                <input
+                  type='text'
+                  className='form-control'
+                  name='url'
+                  placeholder='Url'
+                />
+
+                <label>Comment:</label>
+                <input
+                  type='text'
+                  className='form-control'
+                  name='comment'
+                  placeholder='Comment'
+                />
+
+                <label>Tags:</label>
+                <input
+                  type='text'
+                  className='form-control'
+                  name='tags'
+                  placeholder='Space separated (e.g., personal, banking, finance)'
+                />
+
                 <div className='float-right'>
                   <div className='form-group'>
                     <div className='col-lg-10 col-lg-offset-2'>
-                      <button onClick={this.cancel} type='reset' className='btn btn-default'>Cancel</button>
-                      <button type='submit' className='btn btn-primary'>Submit</button>
+                      <button onClick={this.cancel} type='reset' className='btn btn-default'>
+                        Cancel
+                      </button>
+                      <button className='btn btn-primary' >
+                        Submit
+                      </button>
                     </div>
                   </div>
                 </div>

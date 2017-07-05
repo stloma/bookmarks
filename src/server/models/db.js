@@ -1,7 +1,7 @@
 import session from 'express-session'
 import { MongoClient } from 'mongodb'
-
 import connectMongo from 'connect-mongodb-session'
+
 const MongoDBStore = connectMongo(session)
 
 const store = new MongoDBStore(
@@ -14,7 +14,7 @@ store.on('error', function (error) {
   if (error) throw error
 })
 
-export let bookmarkDb
+let bookmarkDb
 
 MongoClient.connect('mongodb://localhost/bookmarkapp')
   .then(connection => {
@@ -23,3 +23,5 @@ MongoClient.connect('mongodb://localhost/bookmarkapp')
   .catch(error => {
     console.log('ERROR: ', error)
   })
+
+export { bookmarkDb, store }

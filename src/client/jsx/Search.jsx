@@ -2,6 +2,6 @@ import React from 'react'
 
 export const Search = (props) => {
   return (
-    <div><input onChange={props.searchTerm} type='text' placeholder='Search' /></div>
+    <div><input autoFocus onChange={props.searchTerm} type='text' placeholder='Search' /></div>
   )
 }

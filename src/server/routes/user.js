@@ -1,56 +1,31 @@
 import express from 'express'
-import { CreateUser, ComparePassword } from './models/user.js'
 import passport from 'passport'
 
-const LocalStrategy = require('passport-local').Strategy
-export const router = express.Router()
+import { CreateUser, validateRegistration } from '../models/user.js'
+import { ensureAuthenticated } from '../auth/passport.js'
+import { bookmarkDb } from '../models/db.js'
 
-passport.serializeUser(function (user, done) {
-  done(null, user._id)
-})
+const router = express.Router()
 
-passport.deserializeUser(function (user, done) {
-  done(null, user)
-})
-
-passport.use(new LocalStrategy(
-  function (username, password, done) {
-    bookmarkDb.collection('users').findOne({ username: username })
-      .then(user => {
-        if (!user) {
-          return done(null, false, { message: 'Incorrect username.' })
-        }
-        ComparePassword(password, user.password, function (isMatch) {
-          if (isMatch) {
-            return done(null, user)
-          } else {
-            return done(null, false, { message: 'Invalid password.' })
-          }
-        })
-      })
-  }
-))
-
-router.get('/api/logout', ensureAuthenticated, function (req, res) {
+router.get('/logout', ensureAuthenticated, function (req, res) {
   req.session.destroy()
   req.logout()
 })
 
-router.post('/api/login', passport.authenticate('local'), function (req, res) {
-  res.redirect('/')
+router.post('/login', passport.authenticate('local'), function (req, res) {
+  res.status(200).json({ name: res.req.user.name })
 })
 
-function ensureAuthenticated (req, res, next) {
-  if (req.isAuthenticated()) {
-    return next()
-  } else {
-    res.status(401).send('Please login to perform this operation')
-  }
-}
-
-router.post('/api/registeruser', (req, res) => {
+router.post('/registeruser', (req, res) => {
   let newUser = req.body
   newUser.created = new Date().getTime()
+
+  const errors = validateRegistration(newUser)
+  if (errors) {
+    res.status(400).json(errors)
+    return
+  }
+
   CreateUser(newUser, insertUser)
 
   function insertUser (newUser) {
@@ -66,7 +41,4 @@ router.post('/api/registeruser', (req, res) => {
   }
 })
 
-router.get('/userroute', (req, res) => {
-  res.send('user route')
-})
-
+export { router }

@@ -2,51 +2,8 @@
 
 import React from 'react'
 import { TagCloud } from 'react-tagcloud'
-import { Link, withRouter } from 'react-router-dom'
-import { Glyphicon, Button } from 'react-bootstrap'
 import { Search } from './Search.jsx'
-
-function BookmarkTable (props) {
-  const filter = props.searchTerm ? props.searchTerm : props.filterByTag ? props.filterByTag : ''
-
-  const bookmarkRows = props.bookmarks
-    .filter(bookmark => `${bookmark.name} ${bookmark.url} ${bookmark.comment} ${bookmark.tags}`
-      .toUpperCase().indexOf(filter.toUpperCase()) >= 0)
-    .map(bookmark => <BookmarkRow onDeleteClick={props.onDeleteClick} key={bookmark._id} bookmark={bookmark} />)
-
-  return (
-    <table className='table table-striped table-hover'>
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>Name</th>
-          <th>Url</th>
-          <th>Tags</th>
-          <th>Comment</th>
-          <th>Created</th>
-          <th />
-        </tr>
-      </thead>
-      <tbody>
-        {bookmarkRows}
-      </tbody>
-    </table>
-  )
-}
-
-const BookmarkRow = (props) => {
-  return (
-    <tr>
-      <td><Link to={`/bookmarks/${props.bookmark._id}`}>{props.bookmark._id.substr(-4)}</Link></td>
-      <td>{props.bookmark.name}</td>
-      <td>{props.bookmark.url}</td>
-      <td>{props.bookmark.tags}</td>
-      <td>{props.bookmark.comment}</td>
-      <td>{new Date(props.bookmark.created).toString()}</td>
-      <td><Button bsSize='xsmall' onClick={() => props.onDeleteClick(props.bookmark._id)}><Glyphicon glyph='trash' /></Button></td>
-    </tr>
-  )
-}
+import { BookmarkTable } from './BookmarkTable.jsx'
 
 export default class App extends React.Component {
   constructor () {
@@ -54,7 +11,6 @@ export default class App extends React.Component {
     this.state = {
       bookmarks: [],
       tagcount: [],
-      loggedIn: false,
       searchTerm: '',
       filterByTag: ''
     }
@@ -63,6 +19,7 @@ export default class App extends React.Component {
     this.onDeleteClick = this.onDeleteClick.bind(this)
     this.filterByTag = this.filterByTag.bind(this)
     this.clearTagFilter = this.clearTagFilter.bind(this)
+    this.onInfoClick = this.onInfoClick.bind(this)
   }
 
   componentDidMount () {
@@ -92,22 +49,22 @@ export default class App extends React.Component {
     })
   }
 
+  onInfoClick (id) {
+    console.log('Clicked info for site: ', id)
+  }
+
   loadData () {
     let fetchData = {
       method: 'GET',
       credentials: 'include'
     }
 
-    fetch(`/api/bookmarks`, fetchData).then(response => {
-      if (response.status === 401) {
-        this.props.history.push('/login')
-      } else if (response.ok) {
+    fetch('/api/bookmarks', fetchData).then(response => {
+      if (response.ok) {
         response.json().then(data => {
-          console.log('Total count of records: ', data._metadata.total_count)
           this.setState({
             bookmarks: data.records,
-            tagcount: data.tagcount,
-            loggedIn: true
+            tagcount: data.tagcount
           })
         })
       } else {
@@ -135,7 +92,6 @@ export default class App extends React.Component {
   render () {
     const options = {
       luminosity: 'light',
-      hue: 'blue',
       disableRandomColor: true
     }
 
@@ -164,6 +120,7 @@ export default class App extends React.Component {
 
           <BookmarkTable
             onDeleteClick={this.onDeleteClick}
+            onInfoClick={this.onInfoClick}
             searchTerm={this.state.searchTerm}
             bookmarks={this.state.bookmarks}
             filterByTag={this.state.filterByTag}

@@ -17,3 +17,28 @@ export const CreateUser = (newUser, callback) => {
     })
   })
 }
+
+const registerFieldType = {
+  name: 'required',
+  username: 'required',
+  email: 'required',
+  password: 'required',
+  created: 'required'
+}
+
+function validateRegistration (site) {
+  let errors = []
+  for (const field in registerFieldType) {
+    const type = registerFieldType[field]
+    if (type === 'required' && !site[field]) {
+      errors.push(`${field} is required`)
+    }
+  }
+  if (errors.length > 0) {
+    return errors
+  } else {
+    return null
+  }
+}
+
+export { validateRegistration }

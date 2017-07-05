@@ -1,8 +1,28 @@
-.center-text {
+.delete-confirmation {
+  width: 50%;
+  margin: auto;
   text-align: center;
 }
 
-.well {
+.header {
+  border-bottom: 1px solid silver; margin-bottom: 20px;
+}
+
+.error {
+  width: 60%;
+  margin: auto;
+  text-align: center;
+}
+
+.footer {
+  border-top: 1px solid silver;
+  text-align: center;
+  padding-top: 5px;
+  margin-top: 50px;
+}
+
+.delete-confirmation button {
+  margin: 8px 5px;
 }
 
 #search {
@@ -10,9 +30,120 @@
   margin: 1em;
 }
 
+#tagcloud {
+  text-align: center;
+  background-color: black;
+}
+
+.tag-cloud-tag:hover {
+  cursor: pointer;
+}
+
+.tag-button {
+  margin-left: 1px;
+  margin-right: 1px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.modal-text {
+  display: inline;
+  text-align: center;
+}
+
+.modal-buttons {
+  text-align: center;
+}
+
+.modal-buttons button {
+  margin-right: 1em;
+  margin-bottom: 1em;
+}
+
+#modal-delete {
+}
+
+.table-actions {
+  margin-left: 6px;
+  margin-right: 6px;
+  box-shadow: 2px 2px 2px #888888;
+}
+
+.favicon {
+  margin-right: 7px;
+  padding: 2px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-shadow: 1px 1px 1px #888888;
+}
+
 #clear-tags {
   float: right;
   color: #666;
+}
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+/*
+ * Forms
+ *
+ */
+
+label {
+  font-weight: bold;
+}
+
+#addbookmark, #login, #register, #editbookmark {
+  max-width: 500px;
+}
+
+#login input {
+  background-color: #999;
+  color: white;
+  margin-bottom: 5px;
+}
+
+#login button {
+  margin-top: 1em;
+  width: 100%;
+}
+
+#addbookmark input {
+  background-color: #999;
+  color: white;
+  margin-bottom: 5px;
+}
+
+#addbookmark button {
+  margin-right: 6px;
+  margin-top: 3em;
+}
+
+#editbookmark input {
+  background-color: #999;
+  color: white;
+  margin-bottom: 5px;
+}
+
+#editbookmark button {
+  margin-right: 6px;
+  margin-top: 3em;
+}
+
+#register input {
+  background-color: #999;
+  color: white;
+  margin-bottom: 5px;
+}
+
+#register button {
+  margin-right: 6px;
+  margin-top: 3em;
 }
 
 #search input {
@@ -23,62 +154,31 @@
   font-weight: bold;
 }
 
+/*
+ * One-off classes
+ *
+ */
 
-#addbookmark, #login, #register {
-  max-width: 500px;
-}
-
-#addbookmark input {
-  max-width: 450px;
-  background-color: #999;
-  color: white;
-}
-
-#login input {
-  max-width: 450px;
-  background-color: #999;
-  color: white;
-}
-
-#login button {
-  margin-right: 6px;
-  margin-top: 2em;
-  max-width: 450px;
-  width: 100%;
-}
-
-#register input {
-  max-width: 450px;
-  background-color: #999;
-  color: white;
-}
-
-#register button {
-  margin-right: 6px;
-  margin-top: 3em;
-}
-
-.float-right {
-  max-width: 450px;
+.auth-notifier {
+  width: 99%;
   text-align: right;
 }
 
-#addbookmark button {
-  margin-right: 6px;
-  margin-top: 3em;
+.bolder-12-text {
+  font-weight: 900;
+  font-size: 12px;
 }
 
-#tagcloud {
-  text-align: center;
-  background-color: black;
-}
-
-.two-style {
-  font-weight: bold;
+.bold-20-text {
   font-size: 20px;
+  font-weight: bold;
 }
 
 .three-style {
   font-weight: bold;
   font-size: 30px;
+}
+
+.center-text {
+  text-align: center;
 }
