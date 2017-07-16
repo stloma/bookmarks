@@ -1,7 +1,8 @@
+/* globals fetch */
+
 import ReactDOM from 'react-dom'
 import React from 'react'
-import PropTypes from 'prop-types'
-import { BrowserRouter as Router, Redirect, Route, Switch, withRouter } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom'
 
 import App from './App.jsx'
 import { Navigation } from './Navigation.jsx'
@@ -12,6 +13,7 @@ import Register from './Register.jsx'
 import { Loading } from './Loading.jsx'
 import EditBookmark from './EditBookmark.jsx'
 
+  /*
 const AuthNotifier = (props) => {
   console.log('auth notifier: ' + props.loggedIn)
   if (props.loggedIn) {
@@ -21,7 +23,7 @@ const AuthNotifier = (props) => {
   }
   return <div>Please log in</div>
 }
-
+*/
 
 function isAuthenticated (cb) {
   let fetchOptions = {
@@ -30,8 +32,8 @@ function isAuthenticated (cb) {
   }
   fetch('/api/protected', fetchOptions)
     .then(response => {
-       cb(response.ok)
-   })
+      cb(response.ok)
+    })
 }
 
 const Main = (props) => {
@@ -39,7 +41,13 @@ const Main = (props) => {
     return (
       <Switch>
         <Route exact path='/' render={() => (
-          <App showSearch={props.showSearch} showTags={props.showTags} history={props.history} />
+          <App
+            showSearch={props.showSearch}
+            showTags={props.showTags}
+            history={props.history}
+            showSearchFn={props.showSearchFn}
+            showTagsFn={props.showTagsFn}
+          />
         )} />
         <Route exact path='/addbookmark' component={AddBookmark} />
         <Route exact path='/editbookmark' component={EditBookmark} />
@@ -71,21 +79,23 @@ class Container extends React.Component {
     this.showSearch = this.showSearch.bind(this)
   }
 
+    /*
   static propTypes = {
     match: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
   }
+  */
 
   componentDidMount () {
     isAuthenticated((loggedIn) => {
       if (loggedIn) {
-          this.setState({ loggedIn: true })
-          console.log('logged in')
+        this.setState({ loggedIn: true })
+        console.log('logged in')
       } else {
-          this.setState({ loggedIn: false })
+        this.setState({ loggedIn: false })
       }
-      setTimeout(function() {this.setState({ loading: false })}.bind(this), 1000)
+      setTimeout(function () { this.setState({ loading: false }) }.bind(this), 1000)
     })
   }
 
@@ -103,27 +113,35 @@ class Container extends React.Component {
     const { history, location } = this.props
 
     if (this.state.loading) { return <Loading /> }
-      return (
-        <div>
-          <AuthNotifier loggedIn={this.state.loggedIn} />
-          <Navigation showTags={this.showTags} showSearch={this.showSearch} />
-          <Main loggedIn={this.state.loggedIn} showTags={this.state.showTags}
-            showSearch={this.state.showSearch}
-            history={history}
-            location={location}
+    return (
+      <div>
+        <Navigation
+          showTags={this.showTags}
+          showSearch={this.showSearch}
+          disableTagsLink={this.state.showTags}
+          disableSearchLink={this.state.showSearch}
+          loggedIn={this.state.loggedIn}
+        />
+        <Main
+          loggedIn={this.state.loggedIn}
+          showTags={this.state.showTags}
+          showSearch={this.state.showSearch}
+          showSearchFn={this.showSearch}
+          showTagsFn={this.showTags}
+          history={history}
+          location={location}
           />
-          <Footer />
-        </div>
-      )
+        <Footer />
+      </div>
+    )
   }
 }
-//const { from } = this.props.location.state || { from: { pathname: '/' } }
+// const { from } = this.props.location.state || { from: { pathname: '/' } }
 
 const ContainerWithRouter = withRouter(Container)
 const contentNode = document.querySelector('#root')
 
 const NoMatch = () => (<div className='container'><h2>Page Not Found</h2></div>)
-const Protected = () => (<h3>Protected</h3>)
 
 ReactDOM.render(<Router><ContainerWithRouter /></Router>, contentNode)
 

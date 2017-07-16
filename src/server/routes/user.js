@@ -3,7 +3,6 @@ import passport from 'passport'
 
 import { CreateUser, validateRegistration } from '../models/user.js'
 import { ensureAuthenticated } from '../auth/passport.js'
-import { bookmarkDb } from '../models/db.js'
 
 const router = express.Router()
 
@@ -20,24 +19,27 @@ router.post('/registeruser', (req, res) => {
   let newUser = req.body
   newUser.created = new Date().getTime()
 
-  const errors = validateRegistration(newUser)
-  if (errors) {
-    res.status(400).json(errors)
-    return
+  validateRegistration(newUser, validateCb)
+
+  function validateCb (error, result) {
+    if (error) {
+      res.status(400).json(error)
+    } else {
+      CreateUser(newUser, registerCb)
+    }
   }
 
-  CreateUser(newUser, insertUser)
-
-  function insertUser (newUser) {
-    bookmarkDb.collection('users').insertOne(newUser)
-    .then(result =>
-      bookmarkDb.collection('users').find({ _id: result.insertedId }).limit(1).next()
-      ).then(newSite => {
-        res.json(newUser)
-      }).catch(error => {
-        console.log(error)
-        res.status(500).json({ message: `Internal Server Error: ${error}` })
-      })
+  function registerCb (error, result) {
+    if (error) {
+      if (error.code === 11000) {
+        let inputType = error.message.split('$')[1].split(' ')[0]
+        res.status(409).json([inputType + ' already registered'])
+        return
+      }
+      res.status(500).json({ message: `Internal Server Error: ${error}` })
+      return
+    }
+    res.status(200).json(`Successfully registered ${newUser.username}`)
   }
 })
 

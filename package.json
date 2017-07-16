@@ -13,6 +13,7 @@
     "start-hook": "nodemon -w src/server src/server/start_hook.js",
     "devserver": "webpack-dev-server --hot --inline",
     "watch": "webpack --watch",
+    "production": "webpack --config webpack.prod.js",
     "start": "nodemon -w dist/server dist/server/server.js"
   },
   "repository": {

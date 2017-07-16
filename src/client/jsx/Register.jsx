@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Errors } from './Errors.jsx'
+import { Link } from 'react-router-dom'
 
 export default class Register extends React.Component {
   constructor () {
@@ -57,7 +58,7 @@ export default class Register extends React.Component {
 
   render () {
     return (
-      <div>
+      <div id='pattern'>
         {this.state.errors &&
         <Errors closeError={this.closeError} errors={this.state.errors} />
       }
@@ -96,13 +97,14 @@ export default class Register extends React.Component {
                   name='password'
                   placeholder='Password'
                 />
-                <div className='float-right'>
-                  <div className='form-group'>
-                    <div className='col-lg-10 col-lg-offset-2'>
-                      <button onClick={this.cancel} type='reset' className='btn btn-default'>Cancel</button>
-                      <button type='submit' className='btn btn-primary'>Submit</button>
-                    </div>
+                <div className='form-group'>
+                  <div className='form-button'>
+                    <button onClick={this.cancel} type='reset' className='btn btn-default'>Cancel</button>
+                    <button type='submit' className='btn btn-primary'>Submit</button>
                   </div>
+                </div>
+                <div className='center-text'>
+                  Already have an account? <Link to='/login'>Login</Link>
                 </div>
               </div>
             </fieldset>

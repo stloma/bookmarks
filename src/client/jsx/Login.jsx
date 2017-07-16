@@ -1,6 +1,6 @@
 /* globals fetch */
 import React from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Errors } from './Errors.jsx'
 
 export default class Login extends React.Component {
@@ -58,7 +58,7 @@ export default class Login extends React.Component {
 
   render () {
     return (
-      <div>
+      <div id='pattern'>
         {this.state.errors &&
         <Errors closeError={this.closeError} errors={this.state.errors} />
       }
@@ -90,16 +90,15 @@ export default class Login extends React.Component {
                   placeholder='password'
                   id='password'
                 />
-
                 <div className='form-group'>
-                  <div className='col-lg-10 col-lg-offset-2'>
+                  <div className='form-button'>
                     <button type='submit' className='btn btn-primary'>Submit</button>
                   </div>
                 </div>
               </div>
+          <div className='center-text'>Don't have an account? <Link to='/register'>Register</Link></div>
             </fieldset>
           </form>
-          <div className='center-text'>Don't have an account? <Link to='/register'>Register</Link></div>
         </div>
       </div>
     )

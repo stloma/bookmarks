@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { TagCloud } from 'react-tagcloud'
+import { Glyphicon } from 'react-bootstrap'
 import { Search } from './Search.jsx'
 import { BookmarkTable } from './BookmarkTable.jsx'
 
@@ -20,24 +21,12 @@ export default class App extends React.Component {
     this.filterByTag = this.filterByTag.bind(this)
     this.clearTagFilter = this.clearTagFilter.bind(this)
     this.onInfoClick = this.onInfoClick.bind(this)
+    this.clearSearch = this.clearSearch.bind(this)
   }
 
   componentDidMount () {
     this.loadData()
   }
-
-  /*
-  componentDidUpdate (prevProps) {
-    console.log(prevProps)
-    const oldQuery = prevProps.location.search
-    const newQuery = this.props.location.search
-
-    if (oldQuery === newQuery) {
-      return
-    }
-    this.loadData()
-  }
-  */
 
   onDeleteClick (id) {
     let fetchData = {
@@ -87,6 +76,12 @@ export default class App extends React.Component {
 
   clearTagFilter (event) {
     this.setState({ filterByTag: '' })
+    this.props.showTagsFn()
+  }
+
+  clearSearch () {
+    this.setState({ searchTerm: '' })
+    this.props.showSearchFn()
   }
 
   render () {
@@ -96,12 +91,12 @@ export default class App extends React.Component {
     }
 
     return (
-      <div>
+      <div id='pattern'>
         <div className='container'>
 
           {this.props.showTags &&
             <div className='well' id='tagcloud'>
-              <a id='clear-tags' onClick={this.clearTagFilter}>X</a>
+              <Glyphicon id='remove-search' onClick={this.clearTagFilter} glyph='remove-sign' />
               <TagCloud
                 minSize={12} maxSize={35}
                 colorOptions={options} className='simple-cloud'
@@ -114,7 +109,11 @@ export default class App extends React.Component {
 
           { this.props.showSearch &&
             <div id='search'>
-              <Search searchTerm={this.searchTerm} />
+              <Search
+                showSearch={this.props.showSearchFn}
+                clearSearch={this.clearSearch}
+                searchTerm={this.searchTerm}
+              />
             </div>
           }
 

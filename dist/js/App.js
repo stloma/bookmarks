@@ -10,7 +10,13 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = require('react-router-dom');
+var _reactTagcloud = require('react-tagcloud');
+
+var _reactBootstrap = require('react-bootstrap');
+
+var _Search = require('./Search.jsx');
+
+var _BookmarkTable = require('./BookmarkTable.jsx');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18,115 +24,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function BookmarkTable(props) {
-  var bookmarkRows = props.bookmarks.map(function (bookmark) {
-    return _react2.default.createElement(BookmarkRow, { key: bookmark._id, bookmark: bookmark });
-  });
-  return _react2.default.createElement(
-    'table',
-    { className: 'bordered-table' },
-    _react2.default.createElement(
-      'thead',
-      null,
-      _react2.default.createElement(
-        'tr',
-        null,
-        _react2.default.createElement(
-          'th',
-          null,
-          'Id'
-        ),
-        _react2.default.createElement(
-          'th',
-          null,
-          'Name'
-        ),
-        _react2.default.createElement(
-          'th',
-          null,
-          'Url'
-        ),
-        _react2.default.createElement(
-          'th',
-          null,
-          'Created'
-        ),
-        _react2.default.createElement(
-          'th',
-          null,
-          'Comment'
-        ),
-        _react2.default.createElement(
-          'th',
-          null,
-          'Tags'
-        ),
-        _react2.default.createElement(
-          'th',
-          null,
-          'Delete'
-        )
-      )
-    ),
-    _react2.default.createElement(
-      'tbody',
-      null,
-      bookmarkRows
-    )
-  );
-}
-
-var BookmarkRow = function BookmarkRow(props) {
-  return _react2.default.createElement(
-    'tr',
-    null,
-    _react2.default.createElement(
-      'td',
-      null,
-      _react2.default.createElement(
-        _reactRouterDom.Link,
-        { to: '/bookmarks/' + props.bookmark._id },
-        props.bookmark._id.substr(-4)
-      )
-    ),
-    _react2.default.createElement(
-      'td',
-      null,
-      props.bookmark.name
-    ),
-    _react2.default.createElement(
-      'td',
-      null,
-      props.bookmark.url
-    ),
-    _react2.default.createElement(
-      'td',
-      null,
-      new Date(props.bookmark.created).toString()
-    ),
-    _react2.default.createElement(
-      'td',
-      null,
-      props.bookmark.comment
-    ),
-    _react2.default.createElement(
-      'td',
-      null,
-      props.bookmark.tags
-    ),
-    _react2.default.createElement(
-      'td',
-      null,
-      _react2.default.createElement(
-        _reactRouterDom.Link,
-        { to: '/deletebookmark/' + props.bookmark._id },
-        'X'
-      )
-    )
-  );
-};
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* global fetch */
 
 var App = function (_React$Component) {
   _inherits(App, _React$Component);
@@ -136,7 +34,19 @@ var App = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
 
-    _this.state = { bookmarks: [] };
+    _this.state = {
+      bookmarks: [],
+      tagcount: [],
+      searchTerm: '',
+      filterByTag: ''
+    };
+    _this.loadData = _this.loadData.bind(_this);
+    _this.searchTerm = _this.searchTerm.bind(_this);
+    _this.onDeleteClick = _this.onDeleteClick.bind(_this);
+    _this.filterByTag = _this.filterByTag.bind(_this);
+    _this.clearTagFilter = _this.clearTagFilter.bind(_this);
+    _this.onInfoClick = _this.onInfoClick.bind(_this);
+    _this.clearSearch = _this.clearSearch.bind(_this);
     return _this;
   }
 
@@ -146,26 +56,42 @@ var App = function (_React$Component) {
       this.loadData();
     }
   }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate(prevProps) {
-      var oldQuery = prevProps.location.search;
-      var newQuery = this.props.location.search;
+    key: 'onDeleteClick',
+    value: function onDeleteClick(id) {
+      var _this2 = this;
 
-      if (oldQuery === newQuery) {
-        return;
-      }
-      this.loadData();
+      var fetchData = {
+        method: 'DELETE',
+        credentials: 'include'
+      };
+      fetch('/api/bookmarks/' + id, fetchData).then(function (response) {
+        if (!response.ok) {
+          console.log('Failed to delete bookmark: ' + id);
+        } else _this2.loadData();
+      });
+    }
+  }, {
+    key: 'onInfoClick',
+    value: function onInfoClick(id) {
+      console.log('Clicked info for site: ', id);
     }
   }, {
     key: 'loadData',
     value: function loadData() {
-      var _this2 = this;
+      var _this3 = this;
 
-      fetch('/api/bookmarks').then(function (response) {
+      var fetchData = {
+        method: 'GET',
+        credentials: 'include'
+      };
+
+      fetch('/api/bookmarks', fetchData).then(function (response) {
         if (response.ok) {
           response.json().then(function (data) {
-            console.log('Total count of records: ', data._metadata.total_count);
-            _this2.setState({ bookmarks: data.records });
+            _this3.setState({
+              bookmarks: data.records,
+              tagcount: data.tagcount
+            });
           });
         } else {
           response.json().then(function (error) {
@@ -177,12 +103,70 @@ var App = function (_React$Component) {
       });
     }
   }, {
+    key: 'searchTerm',
+    value: function searchTerm(event) {
+      this.setState({ searchTerm: event.target.value });
+    }
+  }, {
+    key: 'filterByTag',
+    value: function filterByTag(event) {
+      this.setState({ filterByTag: event.value });
+    }
+  }, {
+    key: 'clearTagFilter',
+    value: function clearTagFilter(event) {
+      this.setState({ filterByTag: '' });
+      this.props.showTagsFn();
+    }
+  }, {
+    key: 'clearSearch',
+    value: function clearSearch() {
+      this.setState({ searchTerm: '' });
+      this.props.showSearchFn();
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var options = {
+        luminosity: 'light',
+        disableRandomColor: true
+      };
+
       return _react2.default.createElement(
         'div',
-        null,
-        _react2.default.createElement(BookmarkTable, { bookmarks: this.state.bookmarks })
+        { id: 'pattern' },
+        _react2.default.createElement(
+          'div',
+          { className: 'container' },
+          this.props.showTags && _react2.default.createElement(
+            'div',
+            { className: 'well', id: 'tagcloud' },
+            _react2.default.createElement(_reactBootstrap.Glyphicon, { id: 'remove-search', onClick: this.clearTagFilter, glyph: 'remove-sign' }),
+            _react2.default.createElement(_reactTagcloud.TagCloud, {
+              minSize: 12, maxSize: 35,
+              colorOptions: options, className: 'simple-cloud',
+              tags: this.state.tagcount,
+              onClick: this.filterByTag,
+              shuffle: false
+            })
+          ),
+          this.props.showSearch && _react2.default.createElement(
+            'div',
+            { id: 'search' },
+            _react2.default.createElement(_Search.Search, {
+              showSearch: this.props.showSearchFn,
+              clearSearch: this.clearSearch,
+              searchTerm: this.searchTerm
+            })
+          ),
+          _react2.default.createElement(_BookmarkTable.BookmarkTable, {
+            onDeleteClick: this.onDeleteClick,
+            onInfoClick: this.onInfoClick,
+            searchTerm: this.state.searchTerm,
+            bookmarks: this.state.bookmarks,
+            filterByTag: this.state.filterByTag
+          })
+        )
       );
     }
   }]);

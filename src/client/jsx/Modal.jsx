@@ -23,7 +23,7 @@ export const ModalContainer = (props) => (
         <button
           className='btn btn-default modal-close'
           onClick={props.closeModal} >
-        Close
+        Cancel
         </button>
       </Modal.Footer>
     </Modal>

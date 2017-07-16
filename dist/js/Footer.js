@@ -18,7 +18,7 @@ var Footer = exports.Footer = function Footer(props) {
     _react2.default.createElement(
       'h5',
       null,
-      'Footer placeholder'
+      '\xA9 Stephen Lockwood Martin 2017'
     )
   );
 };

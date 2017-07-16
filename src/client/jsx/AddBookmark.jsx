@@ -57,7 +57,7 @@ export default class AddBookmark extends React.Component {
 
   render () {
     return (
-      <div>
+      <div id='pattern'>
         {this.state.errors &&
         <Errors closeError={this.closeError} errors={this.state.errors} />
       }
@@ -100,16 +100,14 @@ export default class AddBookmark extends React.Component {
                   placeholder='Space separated (e.g., personal, banking, finance)'
                 />
 
-                <div className='float-right'>
-                  <div className='form-group'>
-                    <div className='col-lg-10 col-lg-offset-2'>
-                      <button onClick={this.cancel} type='reset' className='btn btn-default'>
+                <div className='form-group'>
+                  <div className='form-button'>
+                    <button onClick={this.cancel} type='reset' className='btn btn-default'>
                         Cancel
                       </button>
-                      <button className='btn btn-primary' >
+                    <button className='btn btn-primary' >
                         Submit
                       </button>
-                    </div>
                   </div>
                 </div>
               </div>

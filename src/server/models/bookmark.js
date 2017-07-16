@@ -17,6 +17,14 @@ const editFieldType = {
   comment: 'optional'
 }
 
+function validUrl (url) {
+  const urlPattern = /^(https?:\/\/){1}[^-][a-z0-9.-]+[^-]\.[a-z]{2,4}$/
+  if (url.match(urlPattern)) {
+    return true
+  }
+  return false
+}
+
 function validateSite (site) {
   let errors = []
   for (const field in siteFieldType) {
@@ -24,6 +32,10 @@ function validateSite (site) {
     if (type === 'required' && !site[field]) {
       errors.push(`${field} is required`)
     }
+  }
+  let url = site['url']
+  if (url && !validUrl(url)) {
+    errors.push('Please enter a valid url. E.g., http://www.example.com')
   }
   if (errors.length > 0) {
     return errors
@@ -39,6 +51,10 @@ function validateEdit (site) {
     if (type === 'required' && !site[field]) {
       errors.push(`${field} is required`)
     }
+  }
+  let url = site['url']
+  if (url && !validUrl(url)) {
+    errors.push('Please enter a valid url. E.g., http://www.example.com')
   }
   if (errors.length > 0) {
     return errors

@@ -1,4 +1,5 @@
 /* globals fetch */
+import { Glyphicon } from 'react-bootstrap'
 
 import React from 'react'
 
@@ -24,6 +25,6 @@ export const Logout = () => {
   }
 
   return (
-    <div onClick={logout}>Logout</div>
+    <a onClick={logout} className='btn'><Glyphicon glyph='log-out' /> Logout</a>
   )
 }

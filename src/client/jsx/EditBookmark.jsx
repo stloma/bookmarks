@@ -1,6 +1,7 @@
 /* globals fetch */
 
 import React from 'react'
+import { Errors } from './Errors.jsx'
 
 export default class EditBookmark extends React.Component {
   constructor (props) {
@@ -13,7 +14,8 @@ export default class EditBookmark extends React.Component {
       name: bookmark.name,
       url: bookmark.url,
       comment: bookmark.comment,
-      tags: bookmark.tags
+      tags: bookmark.tags,
+      errors: false
     })
     this.handleSubmit = this.handleSubmit.bind(this)
     this.cancel = this.cancel.bind(this)
@@ -28,9 +30,13 @@ export default class EditBookmark extends React.Component {
       credentials: 'include'
     })
     .then(response => {
-      response.json().then(error => {
-        console.log('Failed to edit bookmark: ' + error.message)
-      })
+      if (response.ok) {
+        this.props.history.push('/')
+      } else {
+        response.json().then(errors => {
+          this.setState({ errors: errors })
+        })
+      }
     }).catch(err => {
       console.log('Error in sending data to server: ' + err.message)
     })
@@ -56,11 +62,6 @@ export default class EditBookmark extends React.Component {
       comment: form.comment.value,
       tags: form.tags.value
     })
-    form.name.value = ''
-    form.url.value = ''
-    form.comment.value = ''
-    form.tags.value = ''
-    this.props.history.push('/')
   }
 
   cancel () {
@@ -69,14 +70,14 @@ export default class EditBookmark extends React.Component {
 
   render () {
     return (
-      <div>
-        {/*
-        Form is submitting to index, fix
-      */}
+      <div id='pattern'>
+        {this.state.errors &&
+        <Errors closeError={this.closeError} errors={this.state.errors} />
+      }
         <div className='container well' id='editbookmark'>
           <form name='SiteAdd' onSubmit={this.handleSubmit}>
             <fieldset>
-              <legend>Create Bookmark</legend>
+              <legend>Edit Bookmark</legend>
 
               <div className='form-group'>
                 <label>Name:</label>
@@ -98,12 +99,10 @@ export default class EditBookmark extends React.Component {
                   onChange={this.handleInputChange} value={this.state.tags}
                   type='text' className='form-control' name='tags'
                 />
-                <div className='float-right'>
-                  <div className='form-group'>
-                    <div className='col-lg-10 col-lg-offset-2'>
-                      <button onClick={this.cancel} type='reset' className='btn btn-default'>Cancel</button>
-                      <button type='submit' className='btn btn-primary'>Submit</button>
-                    </div>
+                <div className='form-group'>
+                  <div className='form-button'>
+                    <button onClick={this.cancel} type='reset' className='btn btn-default'>Cancel</button>
+                    <button type='submit' className='btn btn-primary'>Submit</button>
                   </div>
                 </div>
               </div>
