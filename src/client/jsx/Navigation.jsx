@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Logout } from './Logout.jsx'
-import { SearchLink, TagsLink, NewBookmark, NavLinks } from './NavLinks.jsx'
+import { NavLinks } from './NavLinks.jsx'
 
 export class Navigation extends React.Component {
   constructor () {
