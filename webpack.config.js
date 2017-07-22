@@ -21,7 +21,8 @@ module.exports = {
         target: 'http://127.0.0.1:3000'
       }
     },
-    historyApiFallback: true
+    historyApiFallback: true,
+    disableHostCheck: true
   },
   devtool: 'source-map',
   module: {
