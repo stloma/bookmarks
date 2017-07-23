@@ -34,7 +34,11 @@ export default class App extends React.Component {
       credentials: 'include'
     }
     fetch(`/api/bookmarks/${id}`, fetchData).then(response => {
-      if (!response.ok) { console.log('Failed to delete bookmark: ' + id) } else this.loadData()
+      if (!response.ok) {
+        console.log('Failed to delete bookmark: ' + id)
+      } else {
+        this.loadData()
+      }
     })
   }
 
@@ -58,11 +62,11 @@ export default class App extends React.Component {
         })
       } else {
         response.json().then(error => {
-          console.log('Failed to fetch issues: ' + error.message)
+          console.log(`Failed to fetch issues: ${error.message}`)
         })
       }
-    }).catch(err => {
-      console.log('Error in fetching data from server: ', err)
+    }).catch(error => {
+      console.log(`Error in fetching data from server: ${error}`)
     })
   }
 
@@ -99,7 +103,8 @@ export default class App extends React.Component {
               <Glyphicon id='remove-search' onClick={this.clearTagFilter} glyph='remove-sign' />
               <TagCloud
                 minSize={12} maxSize={35}
-                colorOptions={options} className='simple-cloud'
+                colorOptions={options}
+                className='simple-cloud'
                 tags={this.state.tagcount}
                 onClick={this.filterByTag}
                 shuffle={false}

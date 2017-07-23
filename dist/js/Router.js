@@ -46,18 +46,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* globals fetch */
 
-/*
-const AuthNotifier = (props) => {
-console.log('auth notifier: ' + props.loggedIn)
-if (props.loggedIn) {
-  return (
-    <div className='auth-notifier'>Welcome</div>
-  )
-}
-return <div>Please log in</div>
-}
-*/
-
 function isAuthenticated(cb) {
   var fetchOptions = {
     method: 'GET',
@@ -116,14 +104,6 @@ var Container = function (_React$Component) {
     _this.showSearch = _this.showSearch.bind(_this);
     return _this;
   }
-
-  /*
-  static propTypes = {
-  match: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
-  }
-  */
 
   _createClass(Container, [{
     key: 'componentDidMount',
@@ -191,7 +171,6 @@ var Container = function (_React$Component) {
 
   return Container;
 }(_react2.default.Component);
-// const { from } = this.props.location.state || { from: { pathname: '/' } }
 
 var ContainerWithRouter = (0, _reactRouterDom.withRouter)(Container);
 var contentNode = document.querySelector('#root');

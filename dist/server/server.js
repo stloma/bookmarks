@@ -87,7 +87,7 @@ _passport2.default.use(new LocalStrategy(function (username, password, done) {
 app.use('/api', _user2.router);
 app.use('/api', _bookmarks.router);
 
-app.listen(3000, function () {
+app.listen(3000, '127.0.0.1', function () {
   console.log('App started on port 3000');
 });
 

@@ -72,6 +72,7 @@ var AddBookmark = function (_React$Component) {
     value: function handleSubmit(event) {
       event.preventDefault();
       var form = document.forms.SiteAdd;
+
       this.createBookmark({
         name: form.name.value,
         url: form.url.value,
@@ -161,7 +162,11 @@ var AddBookmark = function (_React$Component) {
                     { className: 'form-button' },
                     _react2.default.createElement(
                       'button',
-                      { onClick: this.cancel, type: 'reset', className: 'btn btn-default' },
+                      {
+                        onClick: this.cancel,
+                        type: 'reset',
+                        className: 'btn btn-default'
+                      },
                       'Cancel'
                     ),
                     _react2.default.createElement(

@@ -13,9 +13,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = require('react-router-dom');
 
-var _Logout = require('./Logout.jsx');
-
 var _NavLinks = require('./NavLinks.jsx');
+
+var _reactBootstrap = require('react-bootstrap');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -72,7 +72,6 @@ var Navigation = exports.Navigation = function (_React$Component) {
               _react2.default.createElement(
                 'span',
                 { id: 'logo' },
-                _react2.default.createElement('img', { src: '/images/logo.png', style: { width: 25 } }),
                 ' Bookmark Manager'
               )
             ),

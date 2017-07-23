@@ -13,18 +13,6 @@ import Register from './Register.jsx'
 import { Loading } from './Loading.jsx'
 import EditBookmark from './EditBookmark.jsx'
 
-  /*
-const AuthNotifier = (props) => {
-  console.log('auth notifier: ' + props.loggedIn)
-  if (props.loggedIn) {
-    return (
-      <div className='auth-notifier'>Welcome</div>
-    )
-  }
-  return <div>Please log in</div>
-}
-*/
-
 function isAuthenticated (cb) {
   let fetchOptions = {
     method: 'GET',
@@ -79,14 +67,6 @@ class Container extends React.Component {
     this.showSearch = this.showSearch.bind(this)
   }
 
-    /*
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
-  }
-  */
-
   componentDidMount () {
     isAuthenticated((loggedIn) => {
       if (loggedIn) {
@@ -136,7 +116,6 @@ class Container extends React.Component {
     )
   }
 }
-// const { from } = this.props.location.state || { from: { pathname: '/' } }
 
 const ContainerWithRouter = withRouter(Container)
 const contentNode = document.querySelector('#root')

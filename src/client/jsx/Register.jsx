@@ -32,7 +32,7 @@ export default class Register extends React.Component {
         })
       }
     }).catch(err => {
-      console.log('Error in sending data to server: ' + err.message)
+      console.log(`Error in sending data to server: ${err.message}`)
     })
   }
 

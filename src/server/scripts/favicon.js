@@ -14,12 +14,14 @@ export const download = function (url, id, callback) {
       callback(err)
     } else if (res.statusCode === 200) {
       fs.writeFile(
-        path.join(__dirname, '../../../dist/images/favicons/') + id + '.ico', body, function (err) {
+        path.join(__dirname, `../../../dist/images/favicons/${id}.ico`), body, function (err) {
           if (err) {
             callback(err)
           }
-          callback(null, 'success')
+          callback(null, res.statusCode)
         })
+    } else {
+      callback(null, res.statusCode)
     }
   })
 }

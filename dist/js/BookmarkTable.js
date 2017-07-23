@@ -108,7 +108,6 @@ var BookmarkTable = exports.BookmarkTable = function (_React$Component) {
     value: function sort(e) {
       var sortBy = e.currentTarget.id.split('-')[1];
 
-      console.log(this.state.sortOrder);
       var order = this.state.sortBy === sortBy ? this.state.sortOrder === 'desc' ? 'asc' : 'desc' : 'desc';
 
       this.setState({ sortOrder: order });
@@ -193,7 +192,7 @@ var BookmarkTable = exports.BookmarkTable = function (_React$Component) {
         }),
         _react2.default.createElement(
           'table',
-          { className: 'table table-striped table-hover' },
+          { className: 'table table-hover' },
           _react2.default.createElement(
             'thead',
             null,

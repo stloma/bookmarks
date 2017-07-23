@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, Button } from 'react-bootstrap'
+import { Alert } from 'react-bootstrap'
 
 export const Errors = (props) => {
   return (

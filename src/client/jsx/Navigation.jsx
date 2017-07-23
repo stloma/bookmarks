@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { NavLinks } from './NavLinks.jsx'
+import { Glyphicon } from 'react-bootstrap'
 
 export class Navigation extends React.Component {
   constructor () {
@@ -25,7 +26,7 @@ export class Navigation extends React.Component {
         <div className='container'>
           <div className='navbar-header'>
             <Link to='/'>
-              <span id='logo'><img src='/images/logo.png' style={{ width: 25 }} /> Bookmark Manager</span>
+              <span id='logo'> Bookmark Manager</span>
             </Link>
             <button
               aria-expanded='false'
@@ -50,7 +51,6 @@ export class Navigation extends React.Component {
           </div>
         </div>
       </nav>
-
     )
   }
 }

@@ -96,7 +96,7 @@ export default class Login extends React.Component {
                   </div>
                 </div>
               </div>
-          <div className='center-text'>Don't have an account? <Link to='/register'>Register</Link></div>
+              <div className='center-text'>Don't have an account? <Link to='/register'>Register</Link></div>
             </fieldset>
           </form>
         </div>

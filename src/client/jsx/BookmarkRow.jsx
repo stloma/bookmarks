@@ -28,7 +28,7 @@ export const BookmarkRow = (props) => {
       <td>
         <a href={props.bookmark.url}>
           <img
-            className='favicon' src={'/images/favicons/' + props.bookmark.favicon}
+            className='favicon' src={`/images/favicons/${props.bookmark.favicon}`}
             height='20' width='20'
         />
           {props.bookmark.name}

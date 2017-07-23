@@ -30,12 +30,14 @@ var download = exports.download = function download(url, id, callback) {
     if (err) {
       callback(err);
     } else if (res.statusCode === 200) {
-      _fs2.default.writeFile(_path2.default.join(__dirname, '../../../dist/images/favicons/') + id + '.ico', body, function (err) {
+      _fs2.default.writeFile(_path2.default.join(__dirname, '../../../dist/images/favicons/' + id + '.ico'), body, function (err) {
         if (err) {
           callback(err);
         }
-        callback(null, 'success');
+        callback(null, res.statusCode);
       });
+    } else {
+      callback(null, res.statusCode);
     }
   });
 };

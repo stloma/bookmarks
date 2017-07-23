@@ -63,7 +63,7 @@ passport.use(new LocalStrategy(
 app.use('/api', user)
 app.use('/api', bookmarks)
 
-app.listen(3000, () => {
+app.listen(3000, '127.0.0.1', () => {
   console.log('App started on port 3000')
 })
 

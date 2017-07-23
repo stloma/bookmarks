@@ -67,7 +67,6 @@ export class BookmarkTable extends React.Component {
   sort (e) {
     let sortBy = e.currentTarget.id.split('-')[1]
 
-    console.log(this.state.sortOrder)
     let order = this.state.sortBy === sortBy
       ? (this.state.sortOrder === 'desc' ? 'asc' : 'desc')
       : 'desc'
@@ -146,7 +145,7 @@ export class BookmarkTable extends React.Component {
         />
         }
 
-        <table className='table table-striped table-hover'>
+        <table className='table table-hover'>
           <thead >
             <tr className='active'>
               <th width='15%'>

@@ -65,7 +65,9 @@ function addSite(bmarkDb, newSite, cb) {
         cb(error);
         return;
       }
-      newSite.favicon = result ? _id + '.ico' : 'default-favicon.png';
+      console.log(result);
+      newSite.favicon = result === 200 ? _id + '.ico' : 'default-favicon.png';
+      console.log(newSite.favicon);
       var bookmarkId = new _mongodb.ObjectId(_id);
       bookmarkDb.collection(bmarkDb).updateOne({ _id: bookmarkId }, { $set: {
           favicon: newSite.favicon

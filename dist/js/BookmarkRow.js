@@ -49,7 +49,7 @@ var BookmarkRow = exports.BookmarkRow = function BookmarkRow(props) {
         'a',
         { href: props.bookmark.url },
         _react2.default.createElement('img', {
-          className: 'favicon', src: '/images/' + props.bookmark.favicon,
+          className: 'favicon', src: '/images/favicons/' + props.bookmark.favicon,
           height: '20', width: '20'
         }),
         props.bookmark.name

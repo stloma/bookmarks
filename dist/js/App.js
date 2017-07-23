@@ -67,7 +67,9 @@ var App = function (_React$Component) {
       fetch('/api/bookmarks/' + id, fetchData).then(function (response) {
         if (!response.ok) {
           console.log('Failed to delete bookmark: ' + id);
-        } else _this2.loadData();
+        } else {
+          _this2.loadData();
+        }
       });
     }
   }, {
@@ -98,8 +100,8 @@ var App = function (_React$Component) {
             console.log('Failed to fetch issues: ' + error.message);
           });
         }
-      }).catch(function (err) {
-        console.log('Error in fetching data from server: ', err);
+      }).catch(function (error) {
+        console.log('Error in fetching data from server: ' + error);
       });
     }
   }, {
@@ -144,7 +146,8 @@ var App = function (_React$Component) {
             _react2.default.createElement(_reactBootstrap.Glyphicon, { id: 'remove-search', onClick: this.clearTagFilter, glyph: 'remove-sign' }),
             _react2.default.createElement(_reactTagcloud.TagCloud, {
               minSize: 12, maxSize: 35,
-              colorOptions: options, className: 'simple-cloud',
+              colorOptions: options,
+              className: 'simple-cloud',
               tags: this.state.tagcount,
               onClick: this.filterByTag,
               shuffle: false
