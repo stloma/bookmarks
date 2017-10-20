@@ -83,8 +83,10 @@
 .tag-button {
   margin-left: 1px;
   margin-right: 1px;
-  border: 1px solid #ccc;
   border-radius: 3px;
+  background-color: #ccc;
+  border: 1px solid #999;
+  color: black;
 }
 
 .tag-button:focus {
@@ -107,6 +109,10 @@ td {
 tr {
   border-radius: 5px;
 }
+tr a {
+  font-size: 13px;
+}
+
 .table-heading-sort {
   margin-right: 6px;
 }
@@ -191,8 +197,11 @@ label {
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
 
+.favicon {
+  box-shadow: none;
+}
   tr {
-    border-radius: 5px 5px 0 0;
+    border-radius: 2px 2px 0 0;
   }
   table, thead, tbody, th, td, tr {
     display: block;
@@ -213,8 +222,15 @@ only screen and (max-width: 760px),
   }
 
   td:first-child {
-    border-radius: 5px 5px 0 0;
-    background-color: silver !important;
+    border-radius: 2px 2px 0 0;
+    background-color: #e5e4e2 !important;
+  }
+
+  td a {
+    font-weight: bold;
+  }
+  td img {
+    margin-bottom: 3px;
   }
 
   td {

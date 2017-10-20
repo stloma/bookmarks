@@ -84,8 +84,8 @@ export default class Login extends React.Component {
                 <label>Password:</label>
                 <input
                   onChange={this.handleInputChange}
-                  type='password
-                  ' className='form-control'
+                  type='password'
+                  className='form-control'
                   name='password'
                   placeholder='password'
                   id='password'

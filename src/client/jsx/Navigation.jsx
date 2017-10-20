@@ -26,7 +26,7 @@ export class Navigation extends React.Component {
         <div className='container'>
           <div className='navbar-header'>
             <Link to='/'>
-              <span id='logo'> Bookmark Manager</span>
+              <span id='logo'>Bookmark Manager</span>
             </Link>
             <button
               aria-expanded='false'

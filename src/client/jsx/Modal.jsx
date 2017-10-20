@@ -4,7 +4,7 @@ import { Modal } from 'react-bootstrap'
 export const ModalContainer = (props) => (
 
   <div>
-    <Modal bsSize='small' aria-labelledby='contained-modal-title-sm' show={props.showModal} onHide={props.closeModal}>
+    <Modal bsSize='small' animation={false} aria-labelledby='contained-modal-title-sm' show={props.showModal} onHide={props.closeModal}>
       <Modal.Header closeButton>
         <Modal.Title id='contained-modal-title-sm'>Confirm Delete</Modal.Title>
       </Modal.Header>

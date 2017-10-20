@@ -41,6 +41,14 @@ const NewBookmark = (props) => {
   )
 }
 
+const Discover = (props) => {
+  return (
+    <li>
+      <a href='#'><Glyphicon glyph='globe' /> Discover</a>
+    </li>
+  )
+}
+
 export const NavLinks = (props) => {
   const pathname = window.location.pathname
   let links
@@ -64,6 +72,7 @@ export const NavLinks = (props) => {
     default:
       links =
         <ul className='nav navbar-nav navbar-right'>
+          <Discover />
           <NewBookmark />
           <TagsLink showTags={props.showTags} disableTagsLink={props.disableTagsLink} />
           <SearchLink showSearch={props.showSearch} disableSearchLink={props.disableSearchLink} />

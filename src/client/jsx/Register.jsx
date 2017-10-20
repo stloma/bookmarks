@@ -44,12 +44,16 @@ export default class Register extends React.Component {
   handleSubmit (event) {
     event.preventDefault()
     var form = document.forms.UserAdd
-    this.createUser({
-      name: form.name.value,
-      username: form.username.value,
-      email: form.email.value,
-      password: form.password.value
-    })
+    if (form.password.value !== form.password2.value) {
+      this.setState({ errors: [ 'Passwords do not match. Please try again' ] })
+    } else {
+      this.createUser({
+        name: form.name.value,
+        username: form.username.value,
+        email: form.email.value,
+        password: form.password.value
+      })
+    }
   }
 
   cancel () {
@@ -97,6 +101,14 @@ export default class Register extends React.Component {
                   name='password'
                   placeholder='Password'
                 />
+                <label className='control-label'>Re-enter password</label>
+                <input
+                  type='password'
+                  className='form-control'
+                  name='password2'
+                  placeholder='Password'
+                />
+                <br />
                 <div className='form-group'>
                   <div className='form-button'>
                     <button onClick={this.cancel} type='reset' className='btn btn-default'>Cancel</button>

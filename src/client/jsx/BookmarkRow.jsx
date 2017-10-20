@@ -29,7 +29,7 @@ export const BookmarkRow = (props) => {
         <a href={props.bookmark.url}>
           <img
             className='favicon' src={`/images/favicons/${props.bookmark.favicon}`}
-            height='20' width='20'
+            height='35' width='35'
         />
           {props.bookmark.name}
         </a>
