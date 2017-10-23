@@ -4,14 +4,15 @@ import { Link } from 'react-router-dom'
 import { Logout } from './Logout.jsx'
 
 const SearchLink = (props) => {
+  const active = { backgroundColor: '#4aaeee' }
   return (
     <li>
       {props.disableSearchLink ? (
-        <a className='btn btn-info disabled'>
+        <a onClick={props.searchToggle} style={active}>
           <Glyphicon glyph='search' /> Search
        </a>
       ) : (
-        <a onClick={props.showSearch} className='btn'>
+        <a onClick={props.searchToggle} >
           <Glyphicon glyph='search' /> Search
          </a>
    )}
@@ -20,14 +21,15 @@ const SearchLink = (props) => {
 }
 
 const TagsLink = (props) => {
+  const active = { backgroundColor: '#4aaeee' }
   return (
     <li>
       {props.disableTagsLink ? (
-        <a className='btn btn-info disabled'>
+        <a onClick={props.tagsToggle}style={active}>
           <Glyphicon glyph='cloud' /> Tag Cloud
         </a>
       ) : (
-        <a onClick={props.showTags} className='btn'><Glyphicon glyph='cloud' /> Tag Cloud</a>
+        <a onClick={props.tagsToggle}><Glyphicon glyph='cloud' /> Tag Cloud</a>
       )}
     </li>
   )
@@ -36,15 +38,17 @@ const TagsLink = (props) => {
 const NewBookmark = (props) => {
   return (
     <li>
-      <Link className='btn' to='/addbookmark'><Glyphicon glyph='plus' /> New Bookmark</Link>
+      <Link to='/addbookmark'><Glyphicon glyph='plus' /> New Bookmark</Link>
     </li>
   )
 }
 
 const Discover = (props) => {
+  const pathname = window.location.pathname
+  const active = pathname === '/discover' ? { backgroundColor: '#4aaeee' } : {}
   return (
     <li>
-      <a href='#'><Glyphicon glyph='globe' /> Discover</a>
+      <Link style={active} to='/discover'><Glyphicon glyph='globe' /> Discover</Link>
     </li>
   )
 }
@@ -72,10 +76,16 @@ export const NavLinks = (props) => {
     default:
       links =
         <ul className='nav navbar-nav navbar-right'>
-          <Discover />
           <NewBookmark />
-          <TagsLink showTags={props.showTags} disableTagsLink={props.disableTagsLink} />
-          <SearchLink showSearch={props.showSearch} disableSearchLink={props.disableSearchLink} />
+          <Discover history={props.history} />
+          <TagsLink
+            tagsToggle={props.tagsToggle}
+            disableTagsLink={props.disableTagsLink}
+          />
+          <SearchLink
+            searchToggle={props.searchToggle}
+            disableSearchLink={props.disableSearchLink}
+          />
           <li><Logout /></li>
         </ul>
 

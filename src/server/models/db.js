@@ -47,33 +47,75 @@ function getBookmarks (userDb, cb) {
     })
 }
 
-function addSite (bmarkDb, newSite, cb) {
-  bookmarkDb.collection(bmarkDb).insertOne(newSite, function (error, res) {
-    let _id = res.insertedId
-
-    download(newSite.url, _id, function (error, result) {
-      if (error) {
-        cb(error)
-        return
-      }
-      console.log(result)
-      newSite.favicon = result === 200 ? _id + '.ico' : 'default-favicon.png'
-      console.log(newSite.favicon)
-      let bookmarkId = new ObjectId(_id)
-      bookmarkDb.collection(bmarkDb).updateOne({ _id: bookmarkId },
-        {$set: {
-          favicon: newSite.favicon
-        }})
-          .catch(error => {
-            throw error
-          })
+function discover (userDb, cb) {
+  let allBookmarks = []
+  let promises = []
+  //
+  // Get all collections
+  bookmarkDb.listCollections().toArray(function (e, collections) {
+    //
+    // Filter out all bookmark collections that don't belong to the current user
+    let ids = collections.filter(
+      collection => collection.name.startsWith('bookmarks') && !collection.name.endsWith(userDb)
+    )
+    ids.forEach(id => {
+        /*
+      let userId = id.name.split('.')[1]
+      bookmarkDb.collection('users').findOne({ _id: new ObjectId(userId) }, { _id: 0, name: 1 })
+        .then(name => console.log(name.name))
+        */
+      promises.push(bookmarkDb.collection(id.name).find().toArray()
+        .then(bookmarks => {
+          allBookmarks = [...bookmarks, ...allBookmarks]
+          return allBookmarks
+        })
+      )
     })
-    cb(error, res)
+    Promise.all(promises).then(() => {
+      let result = countBy(allBookmarks.map(function (bookmark) {
+        return bookmark.tags
+      })
+         .join(' ')
+        .split(' ')
+      )
+      let tagcount = []
+      Object.keys(result).forEach((tag) => {
+        tagcount.push({ value: tag, count: result[tag] })
+      })
+      const metadata = { total_count: allBookmarks.length }
+      cb(null, { _metadata: metadata, tagcount: tagcount, records: allBookmarks })
+    })
+    .catch(error => {
+      cb(error)
+    })
   })
 }
 
-function deleteSite (bmarkDb, _id, cb) {
-  bookmarkDb.collection(bmarkDb).deleteOne({ _id: _id }).then((result) => {
+async function addBookmark (userDb, newBookmark, cb) {
+  const userId = userDb.split('.')[1]
+
+  let res = await bookmarkDb.collection(userDb).insertOne(newBookmark)
+  let _id = new ObjectId(res.insertedId)
+
+  try {
+  // if this is a new bookmark download favicon and add createdby property
+    if (!newBookmark.favicon) {
+      const result = await download(newBookmark.url, _id)
+      console.log(result)
+      newBookmark.favicon = result === 200 ? `${_id}.ico` : 'default-favicon.png'
+      const name = await bookmarkDb.collection('users').findOne({ _id: new ObjectId(userId) }, { _id: 0, username: 1 })
+      newBookmark.createdBy = name.username
+      await bookmarkDb.collection(userDb).updateOne(
+        { _id: _id },
+        { $set: { favicon: newBookmark.favicon, createdBy: newBookmark.createdBy } }
+      )
+    }
+  } catch (error) { console.log(`Failed creating bookmark: ${error}`); cb(error) }
+  cb(null)
+}
+
+function deleteBookmark (userDb, _id, cb) {
+  bookmarkDb.collection(userDb).deleteOne({ _id: _id }).then((result) => {
     let error = result.result.n === 1 ? null : '404'
     cb(error)
   })
@@ -82,9 +124,9 @@ function deleteSite (bmarkDb, _id, cb) {
   })
 }
 
-function editSite (bmarkDb, site, cb) {
+function editBookmark (userDb, site, cb) {
   let bookmarkId = new ObjectId(site._id)
-  bookmarkDb.collection(bmarkDb).updateOne({ _id: bookmarkId }, {
+  bookmarkDb.collection(userDb).updateOne({ _id: bookmarkId }, {
     $set: {
       name: site.name,
       url: site.url,
@@ -100,4 +142,4 @@ function editSite (bmarkDb, site, cb) {
     })
 }
 
-export { bookmarkDb, store, addSite, getBookmarks, deleteSite, editSite }
+export { discover, bookmarkDb, store, addBookmark, getBookmarks, deleteBookmark, editBookmark }

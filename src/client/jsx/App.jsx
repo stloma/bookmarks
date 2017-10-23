@@ -25,7 +25,12 @@ export default class App extends React.Component {
   }
 
   componentDidMount () {
-    this.loadData()
+    const location = window.location.pathname
+    if (location === '/') {
+      this.loadData('bookmarks')
+    } else if (location === '/discover') {
+      this.loadData('discover')
+    }
   }
 
   onDeleteClick (id) {
@@ -46,13 +51,13 @@ export default class App extends React.Component {
     console.log('Clicked info for site: ', id)
   }
 
-  loadData () {
+  loadData (path = 'bookmarks') {
     let fetchData = {
       method: 'GET',
       credentials: 'include'
     }
 
-    fetch('/api/bookmarks', fetchData).then(response => {
+    fetch(`/api/${path}`, fetchData).then(response => {
       if (response.ok) {
         response.json().then(data => {
           this.setState({
@@ -71,7 +76,15 @@ export default class App extends React.Component {
   }
 
   searchTerm (event) {
-    this.setState({ searchTerm: event.target.value })
+    // const searchTerm = !event.target ? event : event.target.value
+    if (!event.target) {
+      this.setState({ searchTerm: event },
+        () => { this.props.searchToggle() }
+      )
+    } else {
+      this.setState({ searchTerm: event.target.value })
+    }
+    console.log(this.state.searchTerm)
   }
 
   filterByTag (event) {
@@ -80,12 +93,12 @@ export default class App extends React.Component {
 
   clearTagFilter (event) {
     this.setState({ filterByTag: '' })
-    this.props.showTagsFn()
+    this.props.tagsToggle()
   }
 
   clearSearch () {
     this.setState({ searchTerm: '' })
-    this.props.showSearchFn()
+    this.props.searchToggle()
   }
 
   render () {
@@ -97,10 +110,10 @@ export default class App extends React.Component {
     return (
       <div id='pattern'>
         <div className='container'>
-
           {this.props.showTags &&
+          <div >
             <div className='well' id='tagcloud'>
-              <Glyphicon id='remove-search' onClick={this.clearTagFilter} glyph='remove-sign' />
+              <Glyphicon id='remove-search' onClick={this.clearTagFilter} glyph='remove' />
               <TagCloud
                 minSize={12} maxSize={35}
                 colorOptions={options}
@@ -110,26 +123,26 @@ export default class App extends React.Component {
                 shuffle={false}
               />
             </div>
+          </div>
           }
-
           { this.props.showSearch &&
             <div id='search'>
               <Search
-                showSearch={this.props.showSearchFn}
+                searchToggle={this.props.searchToggle}
                 clearSearch={this.clearSearch}
                 searchTerm={this.searchTerm}
               />
             </div>
           }
-
           <BookmarkTable
             onDeleteClick={this.onDeleteClick}
             onInfoClick={this.onInfoClick}
             searchTerm={this.state.searchTerm}
+            searchTermFn={this.searchTerm}
+            searchToggle={this.props.searchToggle}
             bookmarks={this.state.bookmarks}
             filterByTag={this.state.filterByTag}
           />
-
         </div>
       </div>
     )

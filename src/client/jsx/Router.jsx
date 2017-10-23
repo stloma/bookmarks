@@ -2,7 +2,7 @@
 
 import ReactDOM from 'react-dom'
 import React from 'react'
-import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Redirect, Switch, withRouter } from 'react-router-dom'
 
 import App from './App.jsx'
 import { Navigation } from './Navigation.jsx'
@@ -19,24 +19,24 @@ function isAuthenticated (cb) {
     credentials: 'include'
   }
   fetch('/api/protected', fetchOptions)
-    .then(response => {
-      cb(response.ok)
-    })
+    .then(response => cb(response.ok))
 }
 
 const Main = (props) => {
   if (props.loggedIn) {
     return (
       <Switch>
-        <Route exact path='/' render={() => (
-          <App
-            showSearch={props.showSearch}
-            showTags={props.showTags}
-            history={props.history}
-            showSearchFn={props.showSearchFn}
-            showTagsFn={props.showTagsFn}
-          />
-        )} />
+        {[ '/', '/discover' ].map(path =>
+          <Route key={path} exact path={path} render={() => (
+            <App
+              history={props.history}
+              searchToggle={props.searchToggle}
+              tagsToggle={props.tagsToggle}
+              showSearch={props.showSearch}
+              showTags={props.showTags}
+           />
+         )} />
+        )}
         <Route exact path='/addbookmark' component={AddBookmark} />
         <Route exact path='/editbookmark' component={EditBookmark} />
         <Route exact path='/login' component={Login} />
@@ -49,7 +49,8 @@ const Main = (props) => {
   return (
     <Switch>
       <Route exact path='/register' component={Register} />
-      <Route path='*' component={Login} />
+      <Route exact path='/login' component={Login} />
+      <Redirect from='*' to='/login' />
     </Switch>
   )
 }
@@ -63,41 +64,39 @@ class Container extends React.Component {
       loggedIn: false,
       loading: true
     }
-    this.showTags = this.showTags.bind(this)
-    this.showSearch = this.showSearch.bind(this)
+    this.tagsToggle = this.tagsToggle.bind(this)
+    this.searchToggle = this.searchToggle.bind(this)
   }
 
   componentDidMount () {
-    isAuthenticated((loggedIn) => {
+    isAuthenticated(loggedIn => {
       if (loggedIn) {
-        this.setState({ loggedIn: true })
-        console.log('logged in')
+        this.setState({ loggedIn: true, loading: false })
       } else {
-        this.setState({ loggedIn: false })
+        this.setState({ loggedIn: false, loading: false })
       }
-      setTimeout(function () { this.setState({ loading: false }) }.bind(this), 1000)
     })
   }
 
-  showTags () {
+  tagsToggle () {
     this.setState({ showSearch: false })
     this.setState({ showTags: !this.state.showTags })
   }
 
-  showSearch () {
+  searchToggle () {
     this.setState({ showTags: false })
     this.setState({ showSearch: !this.state.showSearch })
   }
 
   render () {
-    const { history, location } = this.props
+    const { history } = this.props
 
     if (this.state.loading) { return <Loading /> }
     return (
       <div>
         <Navigation
-          showTags={this.showTags}
-          showSearch={this.showSearch}
+          tagsToggle={this.tagsToggle}
+          searchToggle={this.searchToggle}
           disableTagsLink={this.state.showTags}
           disableSearchLink={this.state.showSearch}
           loggedIn={this.state.loggedIn}
@@ -106,10 +105,9 @@ class Container extends React.Component {
           loggedIn={this.state.loggedIn}
           showTags={this.state.showTags}
           showSearch={this.state.showSearch}
-          showSearchFn={this.showSearch}
-          showTagsFn={this.showTags}
+          searchToggle={this.searchToggle}
+          tagsToggle={this.tagsToggle}
           history={history}
-          location={location}
           />
         <Footer />
       </div>

@@ -3,7 +3,7 @@ const path = require('path')
 
 module.exports = {
   entry: {
-    app: './src/client/jsx/Router.jsx',
+    app: [ 'babel-polyfill', './src/client/jsx/Router.jsx' ],
     vendor: [ 'react', 'react-dom', 'react-router', 'react-bootstrap', 'react-router-bootstrap' ]
   },
   output: {
@@ -24,14 +24,23 @@ module.exports = {
     historyApiFallback: true,
     disableHostCheck: true
   },
+  stats: {
+    colors: true,
+    reasons: true,
+    chunks: true
+  },
   devtool: 'source-map',
+
   module: {
     loaders: [
       {
+        enforce: 'pre',
         test: /\.jsx$/,
+        exclude: /(node_modules)/,
         loader: 'babel-loader',
         query: {
-          presets: [ 'react', 'es2015', 'stage-2' ]
+          presets: [ 'react', 'es2017' ],
+          plugins: ['transform-async-to-generator']
         }
       }
     ]

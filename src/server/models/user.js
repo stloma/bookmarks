@@ -31,9 +31,7 @@ export const CreateUser = (newUser, cb) => {
 }
 
 const registerFieldType = {
-  name: 'required',
   username: 'required',
-  email: 'required',
   password: 'required',
   created: 'required'
 }

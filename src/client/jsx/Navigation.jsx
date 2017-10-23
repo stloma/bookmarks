@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { NavLinks } from './NavLinks.jsx'
-import { Glyphicon } from 'react-bootstrap'
 
 export class Navigation extends React.Component {
   constructor () {
@@ -18,8 +17,8 @@ export class Navigation extends React.Component {
   }
 
   render () {
-    const {navCollapsed} = this.state
-    const { loggedIn, showTags, showSearch, disableSearchLink, disableTagsLink } = this.props
+    const { navCollapsed } = this.state
+    const { loggedIn, tagsToggle, searchToggle, disableSearchLink, disableTagsLink } = this.props
 
     return (
       <nav className='navbar navbar-default'>
@@ -42,9 +41,10 @@ export class Navigation extends React.Component {
           </div>
           <div className={(navCollapsed ? 'collapse' : '') + ' navbar-collapse'} >
             <NavLinks
-              showTags={showTags}
+              history={this.props.history}
+              tagsToggle={tagsToggle}
               disableTagsLink={disableTagsLink}
-              showSearch={showSearch}
+              searchToggle={searchToggle}
               disableSearchLink={disableSearchLink}
               loggedIn={loggedIn}
             />

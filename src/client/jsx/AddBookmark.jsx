@@ -44,6 +44,11 @@ export default class AddBookmark extends React.Component {
   handleSubmit (event) {
     event.preventDefault()
     const form = document.forms.SiteAdd
+    // Filter duplicate tags
+    let tags = new Set(form.tags.value.split(' '))
+    let unique = ''
+    tags.forEach(tag => { unique += ` ${tag}` })
+    tags = unique.trim()
 
     this.createBookmark({
       name: form.name.value,
@@ -94,7 +99,7 @@ export default class AddBookmark extends React.Component {
                   type='text'
                   className='form-control'
                   name='tags'
-                  placeholder='Space separated (e.g., personal, banking, finance)'
+                  placeholder='Space separated (e.g., personal banking finance)'
                 />
                 <div className='form-group'>
                   <div className='form-button'>

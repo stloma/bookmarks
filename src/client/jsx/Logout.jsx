@@ -25,6 +25,6 @@ export const Logout = () => {
   }
 
   return (
-    <a onClick={logout} className='btn'><Glyphicon glyph='log-out' /> Logout</a>
+    <a onClick={logout}><Glyphicon glyph='log-out' /> Logout</a>
   )
 }

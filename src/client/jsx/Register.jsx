@@ -48,9 +48,7 @@ export default class Register extends React.Component {
       this.setState({ errors: [ 'Passwords do not match. Please try again' ] })
     } else {
       this.createUser({
-        name: form.name.value,
         username: form.username.value,
-        email: form.email.value,
         password: form.password.value
       })
     }
@@ -72,27 +70,13 @@ export default class Register extends React.Component {
               <legend>Register</legend>
 
               <div className='form-group'>
-                <label className='control-label'>Name</label>
-                <input
-                  type='text'
-                  className='form-control'
-                  name='name'
-                  placeholder='Name'
-                />
 
                 <label className='control-label'>Username</label>
                 <input
                   type='text'
                   className='form-control'
                   name='username'
-                  placeholder='Username'
-                />
-                <label className='control-label'>Email</label>
-                <input
-                  type='text'
-                  className='form-control'
-                  name='email'
-                  placeholder='Email'
+                  placeholder='Username/Email'
                 />
                 <label className='control-label'>Password</label>
                 <input

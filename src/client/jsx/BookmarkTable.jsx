@@ -1,5 +1,7 @@
+/* globals fetch */
+
 import React from 'react'
-import { Glyphicon } from 'react-bootstrap'
+import { DropdownButton, MenuItem } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom'
 import { sortBy as _sortBy } from 'lodash'
 import { ModalContainer } from './Modal.jsx'
@@ -14,7 +16,9 @@ export class BookmarkTable extends React.Component {
       editBookmark: false,
       modalBody: '',
       sortBy: 'name',
-      sortOrder: 'desc'
+      sortOrder: 'desc',
+      sortTitle: <span><b>Sort By:</b> Name (a-z)</span>,
+      notifcations: false
     }
     this.showModal = this.showModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
@@ -23,6 +27,8 @@ export class BookmarkTable extends React.Component {
     this.edit = this.edit.bind(this)
     this.sort = this.sort.bind(this)
     this.clearTags = this.clearTags.bind(this)
+    this.save = this.save.bind(this)
+    this.clearNotifications = this.clearNotifications.bind(this)
   }
 
   showModal (id, name) {
@@ -65,18 +71,68 @@ export class BookmarkTable extends React.Component {
   }
 
   sort (e) {
-    let sortBy = e.currentTarget.id.split('-')[1]
+    let by
+    let ord
+    let order
+    switch (e) {
+      case '1':
+        by = 'name'
+        ord = 'desc'
+        order = '(a-z)'
+        break
+      case '2':
+        by = 'name'
+        ord = 'asc'
+        order = '(z-a)'
+        break
+      case '3':
+        by = ''
+        ord = 'asc'
+        order = 'Newest'
+        break
+      case '4':
+        by = ''
+        ord = 'desc'
+        order = 'Oldest'
+        break
+    }
 
-    let order = this.state.sortBy === sortBy
-      ? (this.state.sortOrder === 'desc' ? 'asc' : 'desc')
-      : 'desc'
+    const title = (<span><b>Sort By: </b>{by} {order}</span>)
+    this.setState({ sortTitle: title })
 
-    this.setState({ sortOrder: order })
-    this.setState({ sortBy: sortBy })
+    this.setState({ sortOrder: ord })
+    this.setState({ sortBy: by })
   }
 
   edit (bookmark) {
     this.setState({ editBookmark: bookmark })
+  }
+  save (bookmark) {
+    let newBookmark = Object.assign({}, bookmark)
+    delete newBookmark._id
+    delete newBookmark.createdBy
+    fetch('/api/bookmarks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newBookmark),
+      credentials: 'include'
+    })
+      .then(response => {
+        if (response.ok) {
+          this.setState({ notifications: `Save successful!` })
+        } else {
+          response.json().then(errors => {
+            this.setState({ errors })
+          })
+        }
+      })
+      .catch(err => {
+        console.log(`Error in sending data to server: ${err.message}`)
+      })
+  }
+  clearNotifications () {
+    console.log('clear notifications')
+    this.setState({ notifications: false })
   }
 
   render () {
@@ -97,44 +153,47 @@ export class BookmarkTable extends React.Component {
       : this.state.filterByTag ? this.state.filterByTag
       : ''
 
-    const sortBy = this.state.sortBy
-    const order = this.state.sortOrder
+    const { sortBy, sortOrder } = this.state
 
-    let sorted = _sortBy(this.props.bookmarks, sortBy, order)
+    let sorted = _sortBy(this.props.bookmarks, sortBy, sortOrder)
 
-    if (order === 'asc') {
+    if (sortOrder === 'asc') {
       sorted.reverse()
     }
 
     const bookmarkRows = sorted
-    .filter(bookmark => `${bookmark.name} ${bookmark.url} ${bookmark.comment} ${bookmark.tags}`
+    .filter(bookmark => `${bookmark.name} ${bookmark.url} ${bookmark.comment} ${bookmark.tags} ${bookmark.createdBy}`
       .toUpperCase().indexOf(filter.toUpperCase()) >= 0)
       .map(bookmark =>
         <BookmarkRow
-          onDeleteClick={this.props.onDeleteClick}
+          key={bookmark._id}
           showModal={this.showModal}
           closeModal={this.closeModal}
           filterByTag={this.filterByTag}
           edit={this.edit}
-          key={bookmark._id}
+          save={this.save}
           bookmark={bookmark}
+          searchTermFn={this.props.searchTermFn}
+          searchToggle={this.props.searchToggle}
         />)
 
     let tagHeading
     if (this.state.filterByTag) {
       tagHeading =
-        <th width='35%'>Tags<span id='clear-tags'>
-          <Glyphicon
-            onClick={this.clearTags}
-            glyph='remove-sign'
-                    />
-        </span>
-        </th>
-    } else { tagHeading = <th width='35%'>Tags</th> }
+        <button onClick={this.clearTags} className='btn btn-default'>
+          <b>Clear tags</b>
+        </button>
+    }
 
     return (
 
       <div>
+        {this.state.notifications &&
+          <div className='alert alert-success alert-dismissable'>
+            <a onClick={this.clearNotifications} className='close' data-dismiss='alert' aria-label='close'>&times;</a>
+            <strong>{this.state.notifications}</strong>
+          </div>
+        }
         {this.state.showModal &&
         <ModalContainer
           modalBody={this.state.modalBody}
@@ -144,37 +203,21 @@ export class BookmarkTable extends React.Component {
           confirmDelete={this.confirmDelete}
         />
         }
+        <div className='container' id='display-controls'>
 
-        <table className='table table-hover'>
-          <thead >
-            <tr className='active'>
-              <th width='15%'>
-                <span className='table-heading-sort'>Name</span>
-                <Glyphicon
-                  className='sort-button'
-                  id='sort-name'
-                  onClick={(e) => this.sort(e)}
-                  glyph='sort'
-                />
-              </th>
-              {tagHeading}
-              <th width='25%'>Comment</th>
-              <th width='10%'>
-                <span className='table-heading-sort'>Created</span>
-                <Glyphicon
-                  className='sort-button'
-                  id='sort-created'
-                  onClick={(e) => this.sort(e)}
-                  glyph='sort'
-                />
-              </th>
-              <th width='10%'>Edit/Delete</th>
-            </tr>
-          </thead>
-          <tbody>
+          <div id='clear-tags'>{tagHeading}</div>
+          <DropdownButton onSelect={this.sort} title={this.state.sortTitle} id='bg-nested-dropdown'>
+            <MenuItem eventKey='1'>Name (a-z)</MenuItem>
+            <MenuItem eventKey='2'>Name (z-a)</MenuItem>
+            <MenuItem eventKey='3'>Newest</MenuItem>
+            <MenuItem eventKey='4'>Oldest</MenuItem>
+          </DropdownButton>
+        </div>
+        <div id='cards' className='container'>
+          <div className='row'>
             {bookmarkRows}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
     )
   }

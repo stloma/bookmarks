@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 app.use(session({
-  secret: 'secret',
+  secret: 'jkfd09U&*^F&*56<F5>8df*(DF789SCy89S89c89d*SF9',
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
   },

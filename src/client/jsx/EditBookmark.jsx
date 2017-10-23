@@ -55,12 +55,18 @@ export default class EditBookmark extends React.Component {
   handleSubmit (event) {
     event.preventDefault()
     var form = document.forms.SiteAdd
+
+    // Remove duplicate tags
+    let tags = new Set(form.tags.value.split(' '))
+    let unique = ''
+    tags.forEach(tag => { unique += ` ${tag}` })
+    tags = unique.trim()
     this.editBookmark({
       _id: this.state._id,
       name: form.name.value,
       url: form.url.value,
       comment: form.comment.value,
-      tags: form.tags.value
+      tags: tags
     })
   }
 
@@ -96,8 +102,9 @@ export default class EditBookmark extends React.Component {
                 />
                 <label>Tags:</label>
                 <input
-                  onChange={this.handleInputChange} value={this.state.tags}
+                  onChange={this.handleInputChange} value={this.state.tags || ''}
                   type='text' className='form-control' name='tags'
+                  placeholder='Space separated (e.g., personal banking finance)'
                 />
                 <div className='form-group'>
                   <div className='form-button'>

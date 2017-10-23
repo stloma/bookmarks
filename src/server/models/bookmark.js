@@ -25,7 +25,7 @@ function validUrl (url) {
   return false
 }
 
-function validateSite (site) {
+function validateBookmark (site) {
   let errors = []
   for (const field in siteFieldType) {
     const type = siteFieldType[field]
@@ -63,4 +63,4 @@ function validateEdit (site) {
   }
 }
 
-export { validateSite, validateEdit }
+export { validateBookmark, validateEdit }
