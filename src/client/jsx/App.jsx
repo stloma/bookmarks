@@ -51,32 +51,30 @@ export default class App extends React.Component {
     console.log('Clicked info for site: ', id)
   }
 
-  loadData (path = 'bookmarks') {
+  async loadData (path = 'bookmarks') {
     let fetchData = {
       method: 'GET',
       credentials: 'include'
     }
 
-    fetch(`/api/${path}`, fetchData).then(response => {
+    try {
+      const response = await fetch(`/api/${path}`, fetchData)
       if (response.ok) {
-        response.json().then(data => {
-          this.setState({
-            bookmarks: data.records,
-            tagcount: data.tagcount
-          })
+        const data = await response.json()
+        this.setState({
+          bookmarks: data.records,
+          tagcount: data.tagcount
         })
       } else {
-        response.json().then(error => {
-          console.log(`Failed to fetch issues: ${error.message}`)
-        })
+        const error = await response.json()
+        console.log(`Failed to fetch issues: ${error.message}`)
       }
-    }).catch(error => {
+    } catch (error) {
       console.log(`Error in fetching data from server: ${error}`)
-    })
+    }
   }
 
   searchTerm (event) {
-    // const searchTerm = !event.target ? event : event.target.value
     if (!event.target) {
       this.setState({ searchTerm: event },
         () => { this.props.searchToggle() }

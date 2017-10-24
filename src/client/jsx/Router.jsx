@@ -66,6 +66,7 @@ class Container extends React.Component {
     }
     this.tagsToggle = this.tagsToggle.bind(this)
     this.searchToggle = this.searchToggle.bind(this)
+    this.loadingToggle = this.loadingToggle.bind(this)
   }
 
   componentDidMount () {
@@ -76,6 +77,10 @@ class Container extends React.Component {
         this.setState({ loggedIn: false, loading: false })
       }
     })
+  }
+
+  loadingToggle () {
+    this.setState({ loading: !this.state.loading })
   }
 
   tagsToggle () {
@@ -103,6 +108,7 @@ class Container extends React.Component {
         />
         <Main
           loggedIn={this.state.loggedIn}
+          loadingToggle={this.loadingToggle}
           showTags={this.state.showTags}
           showSearch={this.state.showSearch}
           searchToggle={this.searchToggle}

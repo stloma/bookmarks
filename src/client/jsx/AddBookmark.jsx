@@ -15,25 +15,23 @@ export default class AddBookmark extends React.Component {
     this.closeError = this.closeError.bind(this)
   }
 
-  createBookmark (newBookmark) {
-    fetch('/api/bookmarks', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newBookmark),
-      credentials: 'include'
-    })
-      .then(response => {
-        if (response.ok) {
-          this.props.history.push('/')
-        } else {
-          response.json().then(errors => {
-            this.setState({ errors })
-          })
-        }
+  async createBookmark (newBookmark) {
+    try {
+      const response = await fetch('/api/bookmarks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newBookmark),
+        credentials: 'include'
       })
-      .catch(err => {
-        console.log(`Error in sending data to server: ${err.message}`)
-      })
+      if (response.ok) {
+        this.props.history.push('/')
+      } else {
+        const errors = await response.json()
+        this.setState({ errors })
+      }
+    } catch (error) {
+      console.log(`Error in sending data to server: ${error.message}`)
+    }
   }
 
   closeError (removeError) {
@@ -44,6 +42,7 @@ export default class AddBookmark extends React.Component {
   handleSubmit (event) {
     event.preventDefault()
     const form = document.forms.SiteAdd
+
     // Filter duplicate tags
     let tags = new Set(form.tags.value.split(' '))
     let unique = ''
