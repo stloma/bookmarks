@@ -1,67 +1,65 @@
-/* globals fetch */
+/* globals fetch, document */
 
-import React from 'react'
-import { Errors } from './Errors.jsx'
+import React from 'react';
+import PropTypes from 'prop-types';
+import Errors from './Errors';
 
 export default class AddBookmark extends React.Component {
-  constructor () {
-    super()
+  constructor() {
+    super();
 
     this.state = {
       errors: false
-    }
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.cancel = this.cancel.bind(this)
-    this.closeError = this.closeError.bind(this)
+    };
   }
 
-  async createBookmark (newBookmark) {
+  async createBookmark(newBookmark) {
     try {
       const response = await fetch('/api/bookmarks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newBookmark),
         credentials: 'include'
-      })
+      });
       if (response.ok) {
-        this.props.history.push('/')
+        this.props.history.push('/');
       } else {
-        const errors = await response.json()
-        this.setState({ errors })
+        const errors = await response.json();
+        this.setState({ errors });
       }
     } catch (error) {
-      console.log(`Error in sending data to server: ${error.message}`)
+      console.log(`Error in sending data to server: ${error.message}`);
     }
   }
 
-  closeError (removeError) {
-    const errors = this.state.errors.filter(error => error !== removeError)
-    this.setState({ errors })
+  closeError = (removeError) => {
+    const errors = this.state.errors.filter(error => error !== removeError);
+    this.setState({ errors });
   }
 
-  handleSubmit (event) {
-    event.preventDefault()
-    const form = document.forms.SiteAdd
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const form = document.forms.SiteAdd;
 
     // Filter duplicate tags
-    let tags = new Set(form.tags.value.split(' '))
-    let unique = ''
-    tags.forEach(tag => { unique += ` ${tag}` })
-    tags = unique.trim()
+    let tags = new Set(form.tags.value.split(' '));
+    let unique = '';
+    tags.forEach((tag) => { unique += ` ${tag}`; });
+    tags = unique.trim();
 
     this.createBookmark({
       name: form.name.value,
       url: form.url.value,
       comment: form.comment.value,
       tags: form.tags.value
-    })
+    });
   }
 
-  cancel () {
-    this.props.history.goBack()
+  cancel = () => {
+    this.props.history.goBack();
   }
 
-  render () {
+  render() {
     return (
       <div id='pattern'>
         {this.state.errors &&
@@ -71,31 +69,35 @@ export default class AddBookmark extends React.Component {
             <fieldset>
               <legend>Create Bookmark</legend>
               <div className='form-group'>
-                <label>Name:</label>
+                <label htmlFor='name' >Name:</label>
                 <input
                   autoFocus
                   type='text'
                   className='form-control'
                   name='name'
+                  id='name'
                   placeholder='Name'
                 />
-                <label>Url:</label>
+                <label htmlFor='url'>Url:</label>
                 <input
                   type='text'
+                  id='url'
                   className='form-control'
                   name='url'
                   placeholder='Url'
                 />
-                <label>Comment:</label>
+                <label htmlFor='comment'>Comment:</label>
                 <input
                   type='text'
+                  id='comment'
                   className='form-control'
                   name='comment'
                   placeholder='Comment'
                 />
-                <label>Tags:</label>
+                <label htmlFor='tags'>Tags:</label>
                 <input
                   type='text'
+                  id='tags'
                   className='form-control'
                   name='tags'
                   placeholder='Space separated (e.g., personal banking finance)'
@@ -117,6 +119,10 @@ export default class AddBookmark extends React.Component {
           </form>
         </div>
       </div>
-    )
+    );
   }
 }
+
+AddBookmark.propTypes = {
+  history: PropTypes.object.isRequired
+};

@@ -1,10 +1,10 @@
-const webpack = require('webpack')
-const path = require('path')
+const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
   entry: {
-    app: [ 'babel-polyfill', './src/client/jsx/Router.jsx' ],
-    vendor: [ 'react', 'react-dom', 'react-router', 'react-bootstrap', 'react-router-bootstrap' ]
+    app: ['babel-polyfill', './src/client/jsx/Router.jsx'],
+    vendor: ['react', 'react-dom', 'react-router', 'react-bootstrap', 'react-router-bootstrap']
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -30,7 +30,9 @@ module.exports = {
     chunks: true
   },
   devtool: 'source-map',
-
+  resolve: {
+    extensions: ['.js', '.jsx']
+  },
   module: {
     loaders: [
       {
@@ -39,10 +41,10 @@ module.exports = {
         exclude: /(node_modules)/,
         loader: 'babel-loader',
         query: {
-          presets: [ 'react', 'es2017' ],
-          plugins: ['transform-async-to-generator']
+          presets: ['react', 'es2017'],
+          plugins: ['transform-async-to-generator', 'transform-class-properties']
         }
       }
     ]
   }
-}
+};

@@ -1,67 +1,65 @@
-/* globals fetch */
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Errors } from './Errors.jsx'
+/* globals fetch, window */
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Errors from './Errors';
 
 export default class Login extends React.Component {
-  constructor () {
-    super()
+  constructor() {
+    super();
     this.state = {
       username: '',
       password: '',
       errors: false
-    }
-    this.handleInputChange = this.handleInputChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.closeError = this.closeError.bind(this)
+    };
   }
 
-  handleInputChange (event) {
-    const target = event.target
-    const value = target.value
-    const name = target.name
+  handleInputChange = (event) => {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
 
     this.setState({
       [name]: value
-    })
+    });
   }
 
-  closeError (removeError) {
-    let errors = this.state.errors.filter(error => error !== removeError)
-    this.setState({ errors: errors })
+  closeError = (removeError) => {
+    const errors = this.state.errors.filter(error => error !== removeError);
+    this.setState({ errors });
   }
 
-  handleSubmit (event) {
-    event.preventDefault()
-    let data = 'username=' + this.state.username + '&password=' + this.state.password
-    let fetchData = {
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const data = `username=${this.state.username}&password=${this.state.password}`;
+    const fetchData = {
       method: 'post',
       credentials: 'include',
       headers: {
         'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
       },
       body: data
-    }
+    };
     fetch('/api/login', fetchData)
-    .then(response => {
-      if (response.ok) {
-        window.location.replace('/')
-      } else if (response.status === 401) {
-        this.setState({ errors: ['Username or password incorrect'] })
-      } else if (response.status === 400) {
-        this.setState({ errors: ['Please enter a username and password'] })
-      }
-    }).catch(err => {
-      console.log('Login failure: ' + err)
-    })
+      .then((response) => {
+        if (response.ok) {
+          window.location.replace('/');
+        } else if (response.status === 401) {
+          this.setState({ errors: ['Username or password incorrect'] });
+        } else if (response.status === 400) {
+          this.setState({ errors: ['Please enter a username and password'] });
+        }
+      }).catch((err) => {
+        console.log(`Login failure: ${err}`);
+      });
   }
 
-  render () {
+  render() {
     return (
       <div id='pattern'>
         {this.state.errors &&
         <Errors closeError={this.closeError} errors={this.state.errors} />
-      }
+        }
         <div className='container well' id='login'>
           <form method='POST' action='/api/login' name='Login' onSubmit={this.handleSubmit}>
             <fieldset>
@@ -69,9 +67,10 @@ export default class Login extends React.Component {
 
               <div className='form-group'>
 
-                <label>Username:</label>
+                <label htmlFor='username'>Username:</label>
                 <input
-                  autoFocus onChange={this.handleInputChange}
+                  autoFocus
+                  onChange={this.handleInputChange}
                   onSubmit={this.handleSubmit}
                   type='text'
                   className='form-control'
@@ -81,7 +80,7 @@ export default class Login extends React.Component {
                   id='username'
                 />
 
-                <label>Password:</label>
+                <label htmlFor='password'>Password:</label>
                 <input
                   onChange={this.handleInputChange}
                   type='password'
@@ -96,11 +95,13 @@ export default class Login extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className='center-text'>Don't have an account? <Link to='/register'>Register</Link></div>
+              <div className='center-text'>
+                Don&apos;t have an account?  <Link to='/register'>Register</Link>
+              </div>
             </fieldset>
           </form>
         </div>
       </div>
-    )
+    );
   }
 }

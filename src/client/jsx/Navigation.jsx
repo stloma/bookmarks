@@ -1,24 +1,24 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { NavLinks } from './NavLinks.jsx'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import NavLinks from './NavLinks';
 
-export class Navigation extends React.Component {
-  constructor () {
-    super()
+export default class Navigation extends React.Component {
+  constructor() {
+    super();
 
     this.state = ({
       navCollapsed: true
-    })
-    this.toggleNavCollapse = this.toggleNavCollapse.bind(this)
+    });
   }
 
-  toggleNavCollapse () {
-    this.setState({ navCollapsed: !this.state.navCollapsed })
+  toggleNavCollapse = () => {
+    this.setState({ navCollapsed: !this.state.navCollapsed });
   }
 
-  render () {
-    const { navCollapsed } = this.state
-    const { loggedIn, tagsToggle, searchToggle, disableSearchLink, disableTagsLink } = this.props
+  render() {
+    const { navCollapsed } = this.state;
+    const { loggedIn, tagsToggle, searchToggle, disableSearchLink, disableTagsLink } = this.props;
 
     return (
       <nav className='navbar navbar-default'>
@@ -39,9 +39,8 @@ export class Navigation extends React.Component {
               <span className='icon-bar' />
             </button>
           </div>
-          <div className={(navCollapsed ? 'collapse' : '') + ' navbar-collapse'} >
+          <div className={`${navCollapsed ? 'collapse' : ''} navbar-collapse`} >
             <NavLinks
-              history={this.props.history}
               tagsToggle={tagsToggle}
               disableTagsLink={disableTagsLink}
               searchToggle={searchToggle}
@@ -51,6 +50,14 @@ export class Navigation extends React.Component {
           </div>
         </div>
       </nav>
-    )
+    );
   }
 }
+
+Navigation.propTypes = {
+  loggedIn: PropTypes.bool.isRequired,
+  tagsToggle: PropTypes.func.isRequired,
+  searchToggle: PropTypes.func.isRequired,
+  disableSearchLink: PropTypes.bool.isRequired,
+  disableTagsLink: PropTypes.bool.isRequired
+};

@@ -57,6 +57,9 @@
   margin-right: 1em;
   font-size: 17px;
 }
+#sort-by {
+  margin-left: 4px;
+}
 #display-controls button {
   background-color: white !important;
   background-image: none !important;

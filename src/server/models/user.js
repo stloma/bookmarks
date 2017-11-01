@@ -1,59 +1,45 @@
-import bcrypt from 'bcrypt'
-import { bookmarkDb } from './db.js'
+import bcrypt from 'bcrypt';
+import { db } from './db';
 
-export const ComparePassword = (candidatePassword, hash, callback) => {
-  bcrypt.compare(candidatePassword, hash, function (err, isMatch) {
-    if (err) throw err
-    callback(isMatch)
-  })
-}
+export const ComparePassword = async (candidatePassword, hash) => {
+  try {
+    const isMatch = await bcrypt.compare(candidatePassword, hash);
+    return isMatch;
+  } catch (error) { throw Error(error); }
+};
 
-export const CreateUser = (newUser, cb) => {
-  bcrypt.genSalt(10, function (err, salt) {
-    if (err) throw err
-    bcrypt.hash(newUser.password, salt, function (err, hash) {
-      if (err) throw err
-      newUser.password = hash
-      insertUser(newUser)
-    })
-  })
-
-  function insertUser (newUser) {
-    bookmarkDb.collection('users').insertOne(newUser)
-    .then(result =>
-      bookmarkDb.collection('users').find({ _id: result.insertedId }).limit(1).next()
-      ).then(newUser => {
-        cb(null, newUser)
-      }).catch(error => {
-        cb(error)
-      })
-  }
-}
+export const CreateUser = async (user) => {
+  const newUser = user;
+  try {
+    const passHash = await bcrypt.hash(newUser.password, 10);
+    newUser.password = passHash;
+    return await db.bookmarkDb.collection('users').insertOne(newUser);
+  } catch (error) { throw Error(error); }
+};
 
 const registerFieldType = {
   username: 'required',
   password: 'required',
   created: 'required'
-}
+};
 
-function validateRegistration (site, cb) {
-  let errors = []
-  let emailPattern = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/
-  for (const field in registerFieldType) {
-    const type = registerFieldType[field]
+function validateRegistration(site) {
+  const errors = [];
+  const emailPattern = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+  Object.keys(registerFieldType).forEach((field) => {
+    const type = registerFieldType[field];
     if (type === 'required' && !site[field]) {
-      errors.push(`${field} is required`)
+      errors.push(`${field} is required`);
     }
-  }
-  let email = site['email']
+  });
+  const email = site.email;
   if (email && !email.match(emailPattern)) {
-    errors.push('Please enter a valid email address')
+    errors.push('Please enter a valid email address');
   }
   if (errors.length > 0) {
-    cb(errors)
-  } else {
-    cb(null)
+    return errors;
   }
+  return null;
 }
 
-export { validateRegistration }
+export { validateRegistration };

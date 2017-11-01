@@ -1,95 +1,90 @@
-import express from 'express'
-import { ObjectId } from 'mongodb'
+import express from 'express';
+import { ObjectId } from 'mongodb';
 
-import { ensureAuthenticated } from '../auth/passport.js'
-import { addBookmark, getBookmarks, deleteBookmark, editBookmark, discover } from '../models/db.js'
-import { validateBookmark, validateEdit } from '../models/bookmark.js'
+import ensureAuthenticated from '../auth/passport';
+import { addBookmark, getBookmarks, deleteBookmark, editBookmark, discover } from '../models/db';
+import { validateBookmark, validateEdit } from '../models/bookmark';
 
-const router = express.Router()
+const bookmarks = express.Router();
 
-router.get('/protected', ensureAuthenticated, (req, res) => {
-  res.status(200).json({ name: res.req.user.name })
-})
+bookmarks.get('/protected', ensureAuthenticated, (req, res) => {
+  res.status(200).json({ name: res.req.user.name });
+});
 
-router.get('/bookmarks', ensureAuthenticated, (req, res) => {
-  let userDb = req.session.passport.user
 
-  getBookmarks(userDb, function (error, result) {
-    if (error) {
-      res.status(500).json({ message: `Internal Server Error: ${error}` })
-      throw error
-    }
-    res.json(result)
-  })
-})
+bookmarks.get('/bookmarks', ensureAuthenticated, async (req, res) => {
+  const userDb = req.session.passport.user;
 
-router.get('/discover', ensureAuthenticated, (req, res) => {
-  let userDb = req.session.passport.user
-
-  discover(userDb, function (error, result) {
-    if (error) {
-      res.status(500).json({ message: `Internal Server Error: ${error}` })
-      throw error
-    }
-    res.json(result)
-  })
-})
-
-router.post('/bookmarks', ensureAuthenticated, (req, res) => {
-  let userDb = req.session.passport.user
-  const newBookmark = req.body
-  newBookmark.created = new Date().getTime()
-  const errors = validateBookmark(newBookmark)
-  if (errors) {
-    res.status(400).json(errors)
-    return
-  }
-
-  addBookmark('bookmarks.' + userDb, newBookmark, function (error, result) {
-    if (error) {
-      res.status(500).json({ message: `Internal Server Error: ${error}` })
-    }
-    res.status(200).send('1 record inserted')
-  })
-})
-
-router.delete('/bookmarks/:id', ensureAuthenticated, (req, res) => {
-  let userDb = req.session.passport.user
-  let bookmarkId
   try {
-    bookmarkId = new ObjectId(req.params.id)
-  } catch (error) {
-    res.status(422).json({ message: `Invalid issue ID format: ${error}` })
-    return
-  }
+    const result = await getBookmarks(userDb);
+    res.json(result);
+  } catch (error) { res.status(500).json({ message: `Internal Server Error: ${error}` }); }
+});
 
-  deleteBookmark('bookmarks.' + userDb, bookmarkId, function (error, result) {
-    if (error) {
-      if (error === '404') {
-        res.status(404).json({ message: 'Delete object not found' })
-        return
-      }
-      res.status(500).json({ message: `Internal Server Error: ${error}` })
-      return
-    } res.status(200).json({ message: 'Successfully deleted object' })
-  })
-})
 
-router.patch('/bookmarks', ensureAuthenticated, (req, res) => {
-  let userDb = req.session.passport.user
-  const site = req.body
-  site.updated = new Date().getTime()
+bookmarks.get('/discover', ensureAuthenticated, async (req, res) => {
+  const userDb = req.session.passport.user;
 
-  const errors = validateEdit(site)
+  try {
+    const result = await discover(userDb);
+    res.json(result);
+  } catch (error) { res.status(500).json({ message: `Internal Server Error: ${error}` }); }
+});
+
+bookmarks.post('/bookmarks', ensureAuthenticated, (req, res) => {
+  const userDb = req.session.passport.user;
+  const newBookmark = req.body;
+  newBookmark.created = new Date().getTime();
+  const errors = validateBookmark(newBookmark);
   if (errors) {
-    res.status(422).json(errors)
-    return
+    res.status(400).json(errors);
+    return;
   }
 
-  editBookmark('bookmarks.' + userDb, site, function (error, result) {
-    if (error) throw error
-    res.status(200).json('Edit site success')
-  })
-})
+  addBookmark(`bookmarks.${userDb}`, newBookmark)
+    .then(() => res.status(200).send('1 record inserted'))
+    .catch(error => res.status(500).json({ message: `Internal Server Error: ${error}` }));
+});
 
-export { router }
+bookmarks.delete('/bookmarks/:id', ensureAuthenticated, async (req, res) => {
+  const userDb = req.session.passport.user;
+  let bookmarkId;
+  try {
+    bookmarkId = new ObjectId(req.params.id);
+  } catch (error) {
+    res.status(422).json({ message: `Invalid id format: ${error}` });
+    return;
+  }
+
+  try {
+    await deleteBookmark(`bookmarks.${userDb}`, bookmarkId);
+    res.status(200).json({ message: 'Successfully deleted object' });
+  } catch (error) {
+    if (error.message === '404') {
+      res.status(404).json({ message: 'Bookmark not found' });
+      return;
+    }
+    res.status(500).json({ message: `Internal Server Error: ${error}` });
+  }
+});
+
+bookmarks.patch('/bookmarks', ensureAuthenticated, async (req, res) => {
+  const userDb = req.session.passport.user;
+  const site = req.body;
+  site.updated = new Date().getTime();
+
+  const errors = validateEdit(site);
+  if (errors) {
+    res.status(422).json({ message: `Invalid format: ${errors}` });
+    return;
+  }
+
+  try {
+    await editBookmark(`bookmarks.${userDb}`, site);
+    res.status(200).json({ message: 'Edit site success' });
+  } catch (error) {
+    res.status(422).json({ message: `Invalid id format: ${error}` });
+  }
+});
+
+export default bookmarks;

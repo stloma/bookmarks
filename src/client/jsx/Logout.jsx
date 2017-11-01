@@ -1,30 +1,34 @@
-/* globals fetch */
-import { Glyphicon } from 'react-bootstrap'
+/* globals fetch, window */
 
-import React from 'react'
+import { Glyphicon } from 'react-bootstrap';
 
-export const Logout = () => {
-  const logout = (event) => {
-    event.preventDefault()
-    window.location.replace('/login')
-    let fetchData = {
+import React from 'react';
+
+const Logout = () => {
+  const logout = async (event) => {
+    event.preventDefault();
+    window.location.replace('/login');
+    const fetchData = {
       method: 'GET',
       credentials: 'include'
+    };
+    try {
+      const response = await fetch('/api/logout', fetchData);
+      if (response.status === 401) {
+        console.log('401');
+      } else if (response.status !== 200) {
+        console.log(`Error: ${response.status}`);
+      } else {
+        console.log('logged out');
+      }
+    } catch (error) {
+      console.log(`logout failure: ${error}`);
     }
-    fetch('/api/logout', fetchData)
-      .then(res => {
-        if (res.status === 401) {
-          console.log('401')
-        } else if (res.status !== 200) {
-          console.log('Error: ' + res.status)
-        } else {
-          console.log('logged out')
-        }
-      })
-      .catch(error => console.log('logout failure: ' + error))
-  }
+  };
 
   return (
     <a onClick={logout}><Glyphicon glyph='log-out' /> Logout</a>
-  )
-}
+  );
+};
+
+export default Logout;

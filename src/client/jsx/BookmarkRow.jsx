@@ -1,68 +1,80 @@
-import React from 'react'
-import { Tooltip, Button, Glyphicon, OverlayTrigger } from 'react-bootstrap'
+/* globals window */
 
-export const BookmarkRow = (props) => {
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Tooltip, Button, Glyphicon, OverlayTrigger } from 'react-bootstrap';
+
+const BookmarkRow = (props) => {
   const trash = (
     <Tooltip id='modal-tooltip'>
       Delete
     </Tooltip>
-  )
+  );
   const edit = (
     <Tooltip id='modal-tooltip'>
       Edit
     </Tooltip>
-  )
+  );
   const save = (
     <Tooltip id='modal-tooltip'>
       Save
     </Tooltip>
-  )
+  );
 
-  let tags
+  let tags;
+  // To avoid no-unused-prop-types linting error
+  const { filterByTag } = props;
   if (props.bookmark.tags) {
     tags = props.bookmark.tags.split(' ').map(tag =>
-      <button onClick={() => props.filterByTag(tag)}
+      (<button
+        onClick={() => filterByTag(tag)}
         key={props.bookmark._id + tag}
-        type='button' className='btn btn-xs tag-button'>
+        type='button'
+        className='btn btn-xs tag-button'
+      >
         {tag}
-      </button>
-        )
+      </button>),
+    );
   }
 
-  let comments = props.bookmark.comment
-  let overlay
-  if (comments.length > 20) {
-    let tmp = comments.substr(0, 21)
-    overlay = comments
-    comments = tmp
-    overlay = (<Tooltip id='comments-tooltip'>{overlay}</Tooltip>)
+  let { comment } = props.bookmark;
+  let overlay;
+  if (comment.length > 20) {
+    const tmp = comment.substr(0, 21);
+    overlay = comment;
+    comment = tmp;
+    overlay = (<Tooltip id='comment-tooltip'>{overlay}</Tooltip>);
   }
 
-  const pathname = window.location.pathname
-  let buttons
+  const pathname = window.location.pathname;
+  let buttons;
   switch (pathname) {
     case '/':
       buttons =
-        <div className='card-buttons'>
+        (<div className='card-buttons'>
           <OverlayTrigger placement='bottom' overlay={edit} >
             <Button
-              className='table-actions' bsSize='xsmall'
-              onClick={() => props.edit(props.bookmark)}>
+              className='table-actions'
+              bsSize='xsmall'
+              onClick={() => props.edit(props.bookmark)}
+            >
               <Glyphicon glyph='edit' />
             </Button>
           </OverlayTrigger>
           <OverlayTrigger placement='bottom' overlay={trash} >
             <Button
-              className='table-actions' bsSize='xsmall'
-              onClick={() => props.showModal(props.bookmark._id, props.bookmark.name)}>
+              className='table-actions'
+              bsSize='xsmall'
+              onClick={() => props.showModal(props.bookmark._id, props.bookmark.name)}
+            >
               <Glyphicon glyph='trash' />
             </Button>
           </OverlayTrigger>
-        </div>
-      break
+        </div>);
+      break;
     case '/discover':
       buttons =
-        <div>
+        (<div>
           {props.bookmark.createdBy &&
             <div onClick={() => props.searchTermFn(props.bookmark.createdBy)}>
               Created by: {props.bookmark.createdBy}
@@ -71,13 +83,17 @@ export const BookmarkRow = (props) => {
           <div className='card-buttons'>
             <OverlayTrigger placement='bottom' overlay={save} >
               <Button
-                className='table-actions' bsSize='xsmall'
-                onClick={() => props.save(props.bookmark)}>
+                className='table-actions'
+                bsSize='xsmall'
+                onClick={() => props.save(props.bookmark)}
+              >
                 <Glyphicon glyph='floppy-save' />
               </Button>
             </OverlayTrigger>
           </div>
-        </div>
+        </div>);
+      break;
+    default:
   }
 
   return (
@@ -86,19 +102,22 @@ export const BookmarkRow = (props) => {
         <div className='card-heading'>
           <a href={props.bookmark.url}>
             <img
-              className='favicon' src={`/images/favicons/${props.bookmark.favicon}`}
-              height='35' width='35'
-        />
+              alt={`${props.bookmark.name} favicon`}
+              className='favicon'
+              src={`/images/favicons/${props.bookmark.favicon}`}
+              height='35'
+              width='35'
+            />
             {props.bookmark.name}
           </a>
         </div>
         <div className='card-comment'>
-          {comments}
+          {comment}
           {overlay &&
           <OverlayTrigger placement='bottom' overlay={overlay} >
             <span className='overlay read-more'> ...read more</span>
           </OverlayTrigger>
-        }
+          }
         </div>
         <div className='card-tags'>
           {tags}
@@ -109,5 +128,16 @@ export const BookmarkRow = (props) => {
         {buttons}
       </div>
     </div>
-  )
-}
+  );
+};
+
+BookmarkRow.propTypes = {
+  bookmark: PropTypes.object.isRequired,
+  edit: PropTypes.func.isRequired,
+  filterByTag: PropTypes.func.isRequired,
+  save: PropTypes.func.isRequired,
+  searchTermFn: PropTypes.func.isRequired,
+  showModal: PropTypes.func.isRequired
+};
+
+export default BookmarkRow;

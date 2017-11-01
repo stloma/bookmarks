@@ -1,7 +1,9 @@
-import React from 'react'
+import React from 'react';
 
-export const Footer = (props) => (
+const Footer = () => (
   <div className='footer'>
     <h5>&#169; Stephen Lockwood Martin 2017</h5>
   </div>
-)
+);
+
+export default Footer;
