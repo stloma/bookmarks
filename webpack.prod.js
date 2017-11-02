@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    app: './src/client/jsx/Router.jsx',
+    app: ['babel-polyfill', './src/client/jsx/Router.jsx'],
     vendor: ['react', 'react-dom', 'react-router', 'react-bootstrap', 'react-router-bootstrap']
   },
   output: {
@@ -17,15 +17,22 @@ module.exports = {
       debug: false
     }),
     new webpack.optimize.UglifyJsPlugin({
-      beautify: false,
-      mangle: {
-        screw_ie8: true,
-        keep_fnames: true
+      parallel: true,
+      uglifyOptions: {
+        ie8: false,
+        mangle: {
+          screw_ie8: true,
+          keep_fnames: true
+        }
       },
       compress: {
-        screw_ie8: true
+        screw_ie8: true,
+        warnings: false
       },
-      comments: false
+      output: {
+        beautify: false,
+        comments: false
+      }
     }),
     new webpack.DefinePlugin({
       'process.env': {
@@ -34,14 +41,17 @@ module.exports = {
     })
   ],
   devtool: 'source-map',
+  resolve: {
+    extensions: ['.js', '.jsx']
+  },
   module: {
     loaders: [
       {
         test: /\.jsx$/,
         loader: 'babel-loader',
         query: {
-          presets: ['react', 'es2015', 'stage-2'],
-          plugins: ['transform-class-properties']
+          presets: ['react', 'es2015', 'es2017'],
+          plugins: ['transform-async-to-generator', 'transform-class-properties', 'transform-object-rest-spread']
         }
       }
     ]

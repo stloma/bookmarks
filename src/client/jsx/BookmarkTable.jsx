@@ -1,4 +1,4 @@
-/* globals fetch */
+/* globals fetch, window */
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -8,12 +8,46 @@ import { sortBy as _sortBy } from 'lodash';
 import ModalContainer from './Modal';
 import BookmarkRow from './BookmarkRow';
 
+// Lookup table for types of sorts; selected by dropdown
 const sortLookup = {
   '1': { by: 'name', order: 'desc', title: 'Name (a-z)' },
   '2': { by: 'name', order: 'asc', title: 'Name (z-a)' },
-  '3': { by: '', order: 'asc', title: 'Newest' },
-  '4': { by: '', order: 'desc', title: 'Oldest' }
+  '3': { by: 'created', order: 'asc', title: 'Newest' },
+  '4': { by: 'created', order: 'desc', title: 'Oldest' }
 };
+
+// Filter duplicates if sorting by name
+function noDupsByName(bookmarks) {
+  const noDups = [];
+  let keys;
+  bookmarks.forEach((bookmark) => {
+    if (!keys) {
+      keys = bookmark;
+      noDups.push(bookmark);
+    } else if (keys.url !== bookmark.url) {
+      noDups.push(bookmark);
+      keys = bookmark;
+    }
+  });
+  return noDups;
+}
+
+// Filter duplicates if sorting by date
+function noDupsByDate(bookmarks) {
+  const noDups = [];
+  for (let i = 0; i < bookmarks.length; i += 1) {
+    let seen = false;
+    for (let j = i + 1; j < bookmarks.length; j += 1) {
+      if (bookmarks[i].url === bookmarks[j].url) {
+        seen = true;
+      }
+    }
+    if (!seen) {
+      noDups.push(bookmarks[i]);
+    }
+  }
+  return noDups;
+}
 
 export default class BookmarkTable extends React.Component {
   constructor() {
@@ -24,10 +58,8 @@ export default class BookmarkTable extends React.Component {
       editBookmark: false,
       sortBy: 'name',
       sortOrder: 'desc',
-      sortTitle: 'Name (a-z)',
-      notifcations: false
+      sortTitle: 'Name (a-z)'
     };
-    this.save = this.save.bind(this);
   }
 
   showModal = (id, name) => {
@@ -80,7 +112,7 @@ export default class BookmarkTable extends React.Component {
     this.setState({ editBookmark: bookmark });
   }
 
-  async save(bookmark) {
+  save = async (bookmark) => {
     const newBookmark = Object.assign({}, bookmark);
     delete newBookmark._id;
     delete newBookmark.createdBy;
@@ -92,16 +124,12 @@ export default class BookmarkTable extends React.Component {
         credentials: 'include'
       });
       if (response.ok) {
-        this.setState({ notifications: 'Save successful!' });
+        this.props.alert({ messages: 'Save successful!', type: 'success' });
       } else {
         const errors = await response.json();
-        this.setState({ errors });
+        this.props.alert({ messages: `Save failed: ${errors}`, type: 'danger' });
       }
-    } catch (error) { this.setState({ errors: `Error saving bookmark: ${error}` }); }
-  }
-
-  clearNotifications = () => {
-    this.setState({ notifications: false });
+    } catch (error) { this.props.alert({ messages: `Error saving bookmark: ${error}`, type: 'danger' }); }
   }
 
   render() {
@@ -117,16 +145,29 @@ export default class BookmarkTable extends React.Component {
       );
     }
 
+    // Setup filtering
     const { searchTerm, filterByTag: propsFilterByTag } = this.props;
     const { filterByTag: stateFilterByTag } = this.state;
     const filter = [searchTerm, propsFilterByTag, stateFilterByTag].find(Boolean) || '';
 
+    // Setup sorting
     const { sortBy, sortOrder } = this.state;
     let { sortTitle } = this.state;
 
     sortTitle = <span><b>Sort By: </b><span id='sort-by'>{sortTitle}</span></span>;
 
-    const sorted = _sortBy(this.props.bookmarks, sortBy, sortOrder);
+    let sorted = _sortBy(this.props.bookmarks, sortBy, sortOrder);
+
+    // Remove duplicates if in /discover since it's pulling all users'
+    // bookmarks. Two functions so it can get O(n) when sorting by name, rather
+    // than the O(n^2) sorting by date requires
+    if (window.location.pathname === '/discover') {
+      if (sortBy === 'name') {
+        sorted = noDupsByName(sorted);
+      } else if (sortBy === 'created') {
+        sorted = noDupsByDate(sorted);
+      }
+    }
 
     if (sortOrder === 'asc') {
       sorted.reverse();
@@ -156,19 +197,6 @@ export default class BookmarkTable extends React.Component {
 
     return (
       <div>
-        {this.state.notifications &&
-          <div className='alert alert-success alert-dismissable'>
-            <button
-              onClick={this.clearNotifications}
-              className='close'
-              data-dismiss='alert'
-              aria-label='close'
-            >
-              &times;
-            </button>
-            <strong>{this.state.notifications}</strong>
-          </div>
-        }
         {this.state.showModal &&
         <ModalContainer
           modalTitle={this.state.showModal}
@@ -178,7 +206,6 @@ export default class BookmarkTable extends React.Component {
         />
         }
         <div className='container' id='display-controls'>
-
           <div id='clear-tags'>{tagHeading}</div>
           <DropdownButton onSelect={this.sort} title={sortTitle} id='bg-nested-dropdown'>
             <MenuItem eventKey='1'>Name (a-z)</MenuItem>
@@ -201,6 +228,7 @@ BookmarkTable.propTypes = {
   bookmarks: PropTypes.array.isRequired,
   filterByTag: PropTypes.string.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
+  alert: PropTypes.func.isRequired,
   searchTerm: PropTypes.string.isRequired,
   searchTermFn: PropTypes.func.isRequired
 };

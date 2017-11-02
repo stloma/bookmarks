@@ -40,6 +40,7 @@ const BookmarkRow = (props) => {
   let { comment } = props.bookmark;
   let overlay;
   if (comment.length > 20) {
+    // Shorten displayed comment and add tooltip to see entire comment
     const tmp = comment.substr(0, 21);
     overlay = comment;
     comment = tmp;
@@ -105,8 +106,8 @@ const BookmarkRow = (props) => {
               alt={`${props.bookmark.name} favicon`}
               className='favicon'
               src={`/images/favicons/${props.bookmark.favicon}`}
-              height='35'
-              width='35'
+              height='25'
+              width='25'
             />
             {props.bookmark.name}
           </a>

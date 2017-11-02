@@ -10,9 +10,11 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = require('react-router-dom');
+var _propTypes = require('prop-types');
 
-var _Errors = require('./Errors.jsx');
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRouterDom = require('react-router-dom');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22,8 +24,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* globals fetch */
-
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* globals fetch, window */
 
 var Login = function (_React$Component) {
   _inherits(Login, _React$Component);
@@ -33,41 +34,17 @@ var Login = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this));
 
-    _this.state = {
-      username: '',
-      password: '',
-      errors: false
-    };
-    _this.handleInputChange = _this.handleInputChange.bind(_this);
-    _this.handleSubmit = _this.handleSubmit.bind(_this);
-    _this.closeError = _this.closeError.bind(_this);
-    return _this;
-  }
-
-  _createClass(Login, [{
-    key: 'handleInputChange',
-    value: function handleInputChange(event) {
+    _this.handleInputChange = function (event) {
       var target = event.target;
       var value = target.value;
       var name = target.name;
 
-      this.setState(_defineProperty({}, name, value));
-    }
-  }, {
-    key: 'closeError',
-    value: function closeError(removeError) {
-      var errors = this.state.errors.filter(function (error) {
-        return error !== removeError;
-      });
-      this.setState({ errors: errors });
-    }
-  }, {
-    key: 'handleSubmit',
-    value: function handleSubmit(event) {
-      var _this2 = this;
+      _this.setState(_defineProperty({}, name, value));
+    };
 
+    _this.handleSubmit = async function (event) {
       event.preventDefault();
-      var data = 'username=' + this.state.username + '&password=' + this.state.password;
+      var data = 'username=' + _this.state.username + '&password=' + _this.state.password;
       var fetchData = {
         method: 'post',
         credentials: 'include',
@@ -76,25 +53,35 @@ var Login = function (_React$Component) {
         },
         body: data
       };
-      fetch('/api/login', fetchData).then(function (response) {
+      try {
+        var response = await fetch('/api/login', fetchData);
         if (response.ok) {
           window.location.replace('/');
         } else if (response.status === 401) {
-          _this2.setState({ errors: ['Username or password incorrect'] });
+          _this.props.alert({ messages: 'Username or password incorrect', type: 'danger' });
         } else if (response.status === 400) {
-          _this2.setState({ errors: ['Please enter a username and password'] });
+          _this.props.alert({ messages: 'Please enter a username and password', type: 'danger' });
+        } else {
+          _this.props.alert({ messages: 'Login failed with code: ' + response.status, type: 'danger' });
         }
-      }).catch(function (err) {
-        console.log('Login failure: ' + err);
-      });
-    }
-  }, {
+      } catch (error) {
+        _this.props.alert({ messages: 'Login failed: ' + error, type: 'danger' });
+      }
+    };
+
+    _this.state = {
+      username: '',
+      password: ''
+    };
+    return _this;
+  }
+
+  _createClass(Login, [{
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
         'div',
         { id: 'pattern' },
-        this.state.errors && _react2.default.createElement(_Errors.Errors, { closeError: this.closeError, errors: this.state.errors }),
         _react2.default.createElement(
           'div',
           { className: 'container well', id: 'login' },
@@ -114,11 +101,12 @@ var Login = function (_React$Component) {
                 { className: 'form-group' },
                 _react2.default.createElement(
                   'label',
-                  null,
+                  { htmlFor: 'username' },
                   'Username:'
                 ),
                 _react2.default.createElement('input', {
-                  autoFocus: true, onChange: this.handleInputChange,
+                  autoFocus: true,
+                  onChange: this.handleInputChange,
                   onSubmit: this.handleSubmit,
                   type: 'text',
                   className: 'form-control',
@@ -129,12 +117,13 @@ var Login = function (_React$Component) {
                 }),
                 _react2.default.createElement(
                   'label',
-                  null,
+                  { htmlFor: 'password' },
                   'Password:'
                 ),
                 _react2.default.createElement('input', {
                   onChange: this.handleInputChange,
-                  type: 'password ', className: 'form-control',
+                  type: 'password',
+                  className: 'form-control',
                   name: 'password',
                   placeholder: 'password',
                   id: 'password'
@@ -156,7 +145,7 @@ var Login = function (_React$Component) {
               _react2.default.createElement(
                 'div',
                 { className: 'center-text' },
-                'Don\'t have an account? ',
+                'Don\'t have an account?  ',
                 _react2.default.createElement(
                   _reactRouterDom.Link,
                   { to: '/register' },
@@ -174,3 +163,8 @@ var Login = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Login;
+
+
+Login.propTypes = {
+  alert: _propTypes2.default.func.isRequired
+};

@@ -3,9 +3,12 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Logout = undefined;
 
 var _reactBootstrap = require('react-bootstrap');
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _react = require('react');
 
@@ -13,32 +16,38 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/* globals fetch */
-var Logout = exports.Logout = function Logout() {
-  var logout = function logout(event) {
+var Logout = function Logout(props) {
+  var logout = async function logout(event) {
     event.preventDefault();
     window.location.replace('/login');
     var fetchData = {
       method: 'GET',
       credentials: 'include'
     };
-    fetch('/api/logout', fetchData).then(function (res) {
-      if (res.status === 401) {
-        console.log('401');
-      } else if (res.status !== 200) {
-        console.log('Error: ' + res.status);
+    try {
+      var response = await fetch('/api/logout', fetchData);
+      if (response.status === 401) {
+        props.alert({ messages: 'You must be logged in to access this page', type: 'warning' });
+      } else if (response.status !== 200) {
+        props.alert({ messages: 'Logout error: ' + response.status, type: 'danger' });
       } else {
-        console.log('logged out');
+        props.alert({ messages: 'logged out', type: 'success' });
       }
-    }).catch(function (error) {
-      return console.log('logout failure: ' + error);
-    });
+    } catch (error) {
+      props.alert({ messages: 'Logout failure: ' + error, type: 'danger' });
+    }
   };
 
   return _react2.default.createElement(
     'a',
-    { onClick: logout, className: 'btn' },
+    { onClick: logout },
     _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'log-out' }),
     ' Logout'
   );
+}; /* globals fetch, window */
+
+Logout.propTypes = {
+  alert: _propTypes2.default.func.isRequired
 };
+
+exports.default = Logout;

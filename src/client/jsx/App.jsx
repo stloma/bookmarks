@@ -16,8 +16,6 @@ export default class App extends React.Component {
       searchTerm: '',
       filterByTag: ''
     };
-    this.loadData = this.loadData.bind(this);
-    this.onDeleteClick = this.onDeleteClick.bind(this);
   }
 
   componentDidMount() {
@@ -30,20 +28,20 @@ export default class App extends React.Component {
     }
   }
 
-  async onDeleteClick(id) {
+  onDeleteClick = async (id) => {
     const fetchData = {
       method: 'DELETE',
       credentials: 'include'
     };
     const response = await fetch(`/api/bookmarks/${id}`, fetchData);
     if (!response.ok) {
-      console.log(`Failed to delete bookmark: ${id}`);
+      this.props.alert({ messages: `Failed to delete bookmark: ${id}`, type: 'danger' });
     } else {
       this.loadData();
     }
   }
 
-  async loadData(path = 'bookmarks') {
+  loadData = async (path = 'bookmarks') => {
     const fetchData = {
       method: 'GET',
       credentials: 'include'
@@ -59,18 +57,17 @@ export default class App extends React.Component {
         });
       } else {
         const error = await response.json();
-        console.log(`Failed to fetch issues: ${error.message}`);
+        this.props.alert({ messages: `Failed to download bookmarks: ${error}`, type: 'danger' });
       }
     } catch (error) {
-      console.log(`Error in fetching data from server: ${error}`);
+      this.props.alert({ messages: `Error in fetching data from server: ${error}`, type: 'danger' });
     }
   }
 
   searchTerm = (event) => {
     if (!event.target) {
-      this.setState({ searchTerm: event },
-        () => { this.props.searchToggle(); },
-      );
+      this.props.searchToggle();
+      this.setState({ searchTerm: event });
     } else {
       this.setState({ searchTerm: event.target.value });
     }
@@ -93,6 +90,7 @@ export default class App extends React.Component {
   render() {
     const options = {
       luminosity: 'light',
+      format: 'rgb',
       disableRandomColor: true
     };
 
@@ -100,12 +98,11 @@ export default class App extends React.Component {
       <div id='pattern'>
         <div className='container'>
           {this.props.showTags &&
-          <div >
             <div className='well' id='tagcloud'>
               <Glyphicon id='remove-search' onClick={this.clearTagFilter} glyph='remove' />
               <TagCloud
-                minSize={12}
-                maxSize={35}
+                minSize={14}
+                maxSize={46}
                 colorOptions={options}
                 className='simple-cloud'
                 tags={this.state.tagcount}
@@ -113,14 +110,13 @@ export default class App extends React.Component {
                 shuffle={false}
               />
             </div>
-          </div>
           }
           { this.props.showSearch &&
             <div id='search'>
               <Search
-                searchToggle={this.props.searchToggle}
                 clearSearch={this.clearSearch}
-                searchTerm={this.searchTerm}
+                searchTermFn={this.searchTerm}
+                searchTerm={this.state.searchTerm}
               />
             </div>
           }
@@ -130,6 +126,7 @@ export default class App extends React.Component {
             searchTerm={this.state.searchTerm}
             searchTermFn={this.searchTerm}
             filterByTag={this.state.filterByTag}
+            alert={this.props.alert}
           />
         </div>
       </div>
@@ -140,6 +137,7 @@ export default class App extends React.Component {
 App.propTypes = {
   searchToggle: PropTypes.func.isRequired,
   tagsToggle: PropTypes.func.isRequired,
+  alert: PropTypes.func.isRequired,
   showSearch: PropTypes.bool.isRequired,
   showTags: PropTypes.bool.isRequired
 };

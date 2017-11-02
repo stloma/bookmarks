@@ -2,7 +2,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Errors from './Errors';
 
 export default class EditBookmark extends React.Component {
   constructor(props) {
@@ -15,29 +14,26 @@ export default class EditBookmark extends React.Component {
       name: bookmark.name,
       url: bookmark.url,
       comment: bookmark.comment,
-      tags: bookmark.tags,
-      errors: false
+      tags: bookmark.tags
     });
   }
 
-  editBookmark(bookmark) {
-    fetch('/api/bookmarks', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(bookmark),
-      credentials: 'include'
-    })
-      .then((response) => {
-        if (response.ok) {
-          this.props.history.push('/');
-        } else {
-          response.json().then((errors) => {
-            this.setState({ errors });
-          });
-        }
-      }).catch((err) => {
-        console.log(`Error in sending data to server: ${err.message}`);
+  async editBookmark(bookmark) {
+    try {
+      const response = await fetch('/api/bookmarks', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookmark),
+        credentials: 'include'
       });
+      if (response.ok) {
+        this.props.history.push('/');
+      } else {
+        response.json().then((errors) => {
+          this.props.alert({ messages: errors, type: 'danger' });
+        });
+      }
+    } catch (error) { this.props.alert({ messages: `Failed editing bookmark: ${error}`, type: 'danger' }); }
   }
 
   handleInputChange = (event) => {
@@ -59,6 +55,7 @@ export default class EditBookmark extends React.Component {
     let unique = '';
     tags.forEach((tag) => { unique += ` ${tag}`; });
     tags = unique.trim();
+
     this.editBookmark({
       _id: this.state._id,
       name: form.name.value,
@@ -75,14 +72,10 @@ export default class EditBookmark extends React.Component {
   render() {
     return (
       <div id='pattern'>
-        {this.state.errors &&
-        <Errors closeError={this.closeError} errors={this.state.errors} />
-        }
         <div className='container well' id='editbookmark'>
           <form name='SiteAdd' onSubmit={this.handleSubmit}>
             <fieldset>
               <legend>Edit Bookmark</legend>
-
               <div className='form-group'>
                 <label htmlFor='name'>Name:</label>
                 <input
@@ -141,5 +134,6 @@ export default class EditBookmark extends React.Component {
 
 EditBookmark.propTypes = {
   history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired
+  location: PropTypes.object.isRequired,
+  alert: PropTypes.func.isRequired
 };

@@ -1,16 +1,15 @@
 /* globals fetch, window */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import Errors from './Errors';
 
 export default class Login extends React.Component {
   constructor() {
     super();
     this.state = {
       username: '',
-      password: '',
-      errors: false
+      password: ''
     };
   }
 
@@ -24,12 +23,7 @@ export default class Login extends React.Component {
     });
   }
 
-  closeError = (removeError) => {
-    const errors = this.state.errors.filter(error => error !== removeError);
-    this.setState({ errors });
-  }
-
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
     const data = `username=${this.state.username}&password=${this.state.password}`;
     const fetchData = {
@@ -40,33 +34,28 @@ export default class Login extends React.Component {
       },
       body: data
     };
-    fetch('/api/login', fetchData)
-      .then((response) => {
-        if (response.ok) {
-          window.location.replace('/');
-        } else if (response.status === 401) {
-          this.setState({ errors: ['Username or password incorrect'] });
-        } else if (response.status === 400) {
-          this.setState({ errors: ['Please enter a username and password'] });
-        }
-      }).catch((err) => {
-        console.log(`Login failure: ${err}`);
-      });
+    try {
+      const response = await fetch('/api/login', fetchData);
+      if (response.ok) {
+        window.location.replace('/');
+      } else if (response.status === 401) {
+        this.props.alert({ messages: 'Username or password incorrect', type: 'danger' });
+      } else if (response.status === 400) {
+        this.props.alert({ messages: 'Please enter a username and password', type: 'danger' });
+      } else {
+        this.props.alert({ messages: `Login failed with code: ${response.status}`, type: 'danger' });
+      }
+    } catch (error) { this.props.alert({ messages: `Login failed: ${error}`, type: 'danger' }); }
   }
 
   render() {
     return (
       <div id='pattern'>
-        {this.state.errors &&
-        <Errors closeError={this.closeError} errors={this.state.errors} />
-        }
         <div className='container well' id='login'>
           <form method='POST' action='/api/login' name='Login' onSubmit={this.handleSubmit}>
             <fieldset>
               <legend>Login</legend>
-
               <div className='form-group'>
-
                 <label htmlFor='username'>Username:</label>
                 <input
                   autoFocus
@@ -79,7 +68,6 @@ export default class Login extends React.Component {
                   placeholder='username'
                   id='username'
                 />
-
                 <label htmlFor='password'>Password:</label>
                 <input
                   onChange={this.handleInputChange}
@@ -105,3 +93,7 @@ export default class Login extends React.Component {
     );
   }
 }
+
+Login.propTypes = {
+  alert: PropTypes.func.isRequired
+};

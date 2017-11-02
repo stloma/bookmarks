@@ -72,7 +72,7 @@ const NavLinks = (props) => {
     case '/editbookmark':
       links =
         (<ul className='nav navbar-nav navbar-right'>
-          <li><Logout /></li>
+          <li><Logout alert={props.alert} /></li>
         </ul>);
       break;
     case '/login':
@@ -97,7 +97,7 @@ const NavLinks = (props) => {
             searchToggle={props.searchToggle}
             disableSearchLink={props.disableSearchLink}
           />
-          <li><Logout /></li>
+          <li><Logout alert={props.alert} /></li>
         </ul>);
 
       if (!props.loggedIn) {
@@ -112,7 +112,8 @@ NavLinks.propTypes = {
   disableTagsLink: PropTypes.bool.isRequired,
   loggedIn: PropTypes.bool.isRequired,
   tagsToggle: PropTypes.func.isRequired,
-  searchToggle: PropTypes.func.isRequired
+  searchToggle: PropTypes.func.isRequired,
+  alert: PropTypes.func.isRequired
 };
 
 export default NavLinks;

@@ -42,7 +42,7 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: ['react', 'es2017'],
-          plugins: ['transform-async-to-generator', 'transform-class-properties']
+          plugins: ['transform-async-to-generator', 'transform-class-properties', 'transform-object-rest-spread']
         }
       }
     ]

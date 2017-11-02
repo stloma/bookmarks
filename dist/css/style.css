@@ -120,10 +120,17 @@
 }
 #tagcloud {
   text-align: center;
-  background-color: black;
-  margin: 0;
-  width: 97%;
+  background-color: #005273;
+  width: 100%;
+  margin-bottom: 2em !important;
+  max-width: 700px;
   margin: auto;
+  border: 0;
+  box-shadow: 1px 1px 5px #000;
+}
+
+.simple-cloud {
+  padding: 2em;
 }
 
 .tag-cloud-tag:hover {
@@ -207,16 +214,16 @@ label {
   margin: auto;
 }
 .bookmark-card-wrapper {
-  min-height: 180px;
-  max-height: 180px;
+  min-height: 160px;
+  max-height: 160px;
 }
 
 .bookmark-card-inner {
   max-width: 350px;
   margin: auto;
   overflow: auto;
-  max-height: 170px;
-  min-height: 170px;
+  max-height: 150px;
+  min-height: 150px;
   background-color: white;
   margin-bottom: 10px;
   padding: 10px;
@@ -232,7 +239,8 @@ label {
   margin: 6px;
   border-bottom: 1px dotted #ccc;
   padding-bottom: 8px;
-  font-size: 24px;
+  margin-bottom: 8px;
+  font-size: 18px;
 }
 .card-heading a {
   color: #4aaeee;
@@ -332,9 +340,19 @@ label {
     transform: translateX(-50%) translateY(-50%);
 }
 
+.error {
+  padding-top: 2em;
+  padding-bottom: 1px;
+  line-height: 0px;
+}
+
+#nav-alerts-wrapper {
+  background-color: #E3E6E9;
+}
+
 #pattern {
   background-color: #E3E6E9;
-  padding-top: 3em;
+  padding-top: 2em;
   padding-bottom: 3em;
   /* background-color: #DFDBE5; */
 }

@@ -25,6 +25,20 @@ function isAuthenticated(cb) {
 
 const NoMatch = () => (<div className='container'><h2>Page Not Found</h2></div>);
 
+const renderMergedProps = (component, ...rest) => {
+  const finalProps = Object.assign({}, ...rest);
+  return (
+    React.createElement(component, finalProps)
+  );
+};
+
+const PropsRoute = ({ component, ...rest }) => (
+  <Route
+    {...rest}
+    render={routeProps => renderMergedProps(component, routeProps, rest)}
+  />
+);
+
 const Main = (props) => {
   if (props.loggedIn) {
     return (
@@ -41,14 +55,15 @@ const Main = (props) => {
                 tagsToggle={props.tagsToggle}
                 showSearch={props.showSearch}
                 showTags={props.showTags}
+                alert={props.alert}
               />
             )}
           />)
         )}
-        <Route exact path='/addbookmark' component={AddBookmark} />
-        <Route exact path='/editbookmark' component={EditBookmark} />
-        <Route exact path='/login' component={Login} />
-        <Route exact path='/register' component={Register} />
+        <PropsRoute exact path='/addbookmark' alert={props.alert} component={AddBookmark} />
+        <PropsRoute exact path='/editbookmark'alert={props.alert} component={EditBookmark} />
+        <PropsRoute exact path='/login' alert={props.alert} component={Login} />
+        <PropsRoute exact path='/register' alert={props.alert} component={Register} />
         <Route path='/deletebookmark/:id' component={App} />
         <Route path='*' component={NoMatch} />
       </Switch>
@@ -56,15 +71,16 @@ const Main = (props) => {
   }
   return (
     <Switch>
-      <Route exact path='/register' component={Register} />
-      <Route exact path='/login' component={Login} />
+      <PropsRoute exact path='/register' alert={props.alert} component={Register} />
+      <PropsRoute exact path='/login' alert={props.alert} component={Login} />
       <Redirect from='*' to='/login' />
     </Switch>
   );
 };
 
 Main.propTypes = {
-  loggedIn: PropTypes.bool.isRequired
+  loggedIn: PropTypes.bool.isRequired,
+  alert: PropTypes.func.isRequired
 };
 
 class Container extends React.Component {
@@ -74,7 +90,7 @@ class Container extends React.Component {
       showTags: false,
       showSearch: false,
       loggedIn: false,
-      notifications: '',
+      alerts: { messages: '', type: '' },
       loading: true
     };
   }
@@ -103,6 +119,22 @@ class Container extends React.Component {
     this.setState({ showSearch: !this.state.showSearch });
   }
 
+  clearAlert = (alert) => {
+    const alerts = this.state.alerts;
+    alerts.messages = alerts.messages.filter(message => message !== alert);
+    this.setState({ alerts });
+  }
+
+  alert = (alerts) => {
+    if (alerts.messages instanceof Array) {
+      this.setState({ alerts });
+    } else {
+      const message = alerts;
+      message.messages = [message.messages];
+      this.setState({ alerts: message });
+    }
+  }
+
   render() {
     const { history } = this.props;
 
@@ -115,6 +147,9 @@ class Container extends React.Component {
           disableTagsLink={this.state.showTags}
           disableSearchLink={this.state.showSearch}
           loggedIn={this.state.loggedIn}
+          clearAlert={this.clearAlert}
+          alerts={this.state.alerts}
+          alert={this.alert}
         />
         <Main
           loggedIn={this.state.loggedIn}
@@ -124,6 +159,7 @@ class Container extends React.Component {
           searchToggle={this.searchToggle}
           tagsToggle={this.tagsToggle}
           history={history}
+          alert={this.alert}
         />
         <Footer />
       </div>

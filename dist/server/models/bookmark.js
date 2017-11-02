@@ -1,10 +1,5 @@
-'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var siteFieldType = {
+const siteFieldType = {
   name: 'required',
   url: 'required',
   created: 'required',
@@ -13,7 +8,7 @@ var siteFieldType = {
   comment: 'optional'
 };
 
-var editFieldType = {
+const editFieldType = {
   name: 'required',
   url: 'required',
   updated: 'required',
@@ -23,51 +18,44 @@ var editFieldType = {
 };
 
 function validUrl(url) {
-  var urlPattern = /^(https?:\/\/){1}[^-][a-z0-9.-]+[^-]\.[a-z]{2,4}$/;
-  if (url.match(urlPattern)) {
-    return true;
-  }
-  return false;
+  return url.match(/^(https?:\/\/){1}[^-][a-z0-9.-]+[^-]\.[a-z]{2,4}$/);
 }
 
-function validateSite(site) {
-  var errors = [];
-  for (var field in siteFieldType) {
-    var type = siteFieldType[field];
+function validateBookmark(site) {
+  const errors = [];
+  Object.keys(siteFieldType).forEach(field => {
+    const type = siteFieldType[field];
     if (type === 'required' && !site[field]) {
-      errors.push(field + ' is required');
+      errors.push(`${field} is required`);
     }
-  }
-  var url = site['url'];
+  });
+  const url = site.url;
   if (url && !validUrl(url)) {
     errors.push('Please enter a valid url. E.g., http://www.example.com');
   }
   if (errors.length > 0) {
     return errors;
-  } else {
-    return null;
   }
+  return null;
 }
 
 function validateEdit(site) {
-  var errors = [];
-  for (var field in editFieldType) {
-    var type = editFieldType[field];
+  const errors = [];
+  Object.keys(editFieldType).forEach(field => {
+    const type = editFieldType[field];
     if (type === 'required' && !site[field]) {
-      errors.push(field + ' is required');
+      errors.push(`${field} is required`);
     }
-  }
-  var url = site['url'];
+  });
+  const url = site.url;
   if (url && !validUrl(url)) {
     errors.push('Please enter a valid url. E.g., http://www.example.com');
   }
   if (errors.length > 0) {
     return errors;
-  } else {
-    return null;
   }
+  return null;
 }
 
-exports.validateSite = validateSite;
-exports.validateEdit = validateEdit;
+export { validateBookmark, validateEdit };
 //# sourceMappingURL=bookmark.js.map

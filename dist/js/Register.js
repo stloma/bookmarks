@@ -10,7 +10,9 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Errors = require('./Errors.jsx');
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRouterDom = require('react-router-dom');
 
@@ -20,7 +22,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* globals fetch */
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* globals fetch, document */
 
 var Register = function (_React$Component) {
   _inherits(Register, _React$Component);
@@ -30,69 +32,53 @@ var Register = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Register.__proto__ || Object.getPrototypeOf(Register)).call(this));
 
-    _this.state = {
-      user: [],
-      errors: false
+    _this.createUser = async function (newUser) {
+      try {
+        var response = await fetch('/api/registeruser', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newUser)
+        });
+        if (response.ok) {
+          _this.props.history.push('/');
+        } else {
+          var alerts = await response.json();
+          _this.props.alert({ messages: alerts, type: 'danger' });
+        }
+      } catch (error) {
+        _this.props.alert({ messages: 'Error in creating user: ' + error, type: 'danger' });
+      }
     };
-    _this.handleSubmit = _this.handleSubmit.bind(_this);
-    _this.cancel = _this.cancel.bind(_this);
-    _this.closeError = _this.closeError.bind(_this);
+
+    _this.handleSubmit = function (event) {
+      event.preventDefault();
+      var form = document.forms.UserAdd;
+      if (form.password.value !== form.password2.value) {
+        _this.props.alert({ messages: 'Passwords do not match. Please try again', type: 'danger' });
+      } else {
+        _this.createUser({
+          username: form.username.value,
+          password: form.password.value
+        });
+      }
+    };
+
+    _this.cancel = function () {
+      _this.props.history.goBack();
+    };
+
+    _this.state = {
+      user: []
+    };
     return _this;
   }
 
   _createClass(Register, [{
-    key: 'createUser',
-    value: function createUser(newUser) {
-      var _this2 = this;
-
-      fetch('/api/registeruser', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newUser)
-      }).then(function (response) {
-        if (response.ok) {
-          _this2.props.history.push('/');
-        } else {
-          response.json().then(function (errors) {
-            _this2.setState({ errors: errors });
-          });
-        }
-      }).catch(function (err) {
-        console.log('Error in sending data to server: ' + err.message);
-      });
-    }
-  }, {
-    key: 'closeError',
-    value: function closeError(removeError) {
-      var errors = this.state.errors.filter(function (error) {
-        return error !== removeError;
-      });
-      this.setState({ errors: errors });
-    }
-  }, {
-    key: 'handleSubmit',
-    value: function handleSubmit(event) {
-      event.preventDefault();
-      var form = document.forms.UserAdd;
-      this.createUser({
-        name: form.name.value,
-        username: form.username.value,
-        email: form.email.value,
-        password: form.password.value
-      });
-    }
-  }, {
-    key: 'cancel',
-    value: function cancel() {
-      this.props.history.goBack();
-    }
-  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
         'div',
         { id: 'pattern' },
-        this.state.errors && _react2.default.createElement(_Errors.Errors, { closeError: this.closeError, errors: this.state.errors }),
         _react2.default.createElement(
           'div',
           { className: 'container well', id: 'register' },
@@ -112,48 +98,41 @@ var Register = function (_React$Component) {
                 { className: 'form-group' },
                 _react2.default.createElement(
                   'label',
-                  { className: 'control-label' },
-                  'Name'
-                ),
-                _react2.default.createElement('input', {
-                  type: 'text',
-                  className: 'form-control',
-                  name: 'name',
-                  placeholder: 'Name'
-                }),
-                _react2.default.createElement(
-                  'label',
-                  { className: 'control-label' },
+                  { htmlFor: 'username', className: 'control-label' },
                   'Username'
                 ),
                 _react2.default.createElement('input', {
                   type: 'text',
                   className: 'form-control',
                   name: 'username',
-                  placeholder: 'Username'
+                  id: 'username',
+                  placeholder: 'Username/Email'
                 }),
                 _react2.default.createElement(
                   'label',
-                  { className: 'control-label' },
-                  'Email'
-                ),
-                _react2.default.createElement('input', {
-                  type: 'text',
-                  className: 'form-control',
-                  name: 'email',
-                  placeholder: 'Email'
-                }),
-                _react2.default.createElement(
-                  'label',
-                  { className: 'control-label' },
+                  { htmlFor: 'password', className: 'control-label' },
                   'Password'
                 ),
                 _react2.default.createElement('input', {
                   type: 'password',
                   className: 'form-control',
                   name: 'password',
+                  id: 'password',
                   placeholder: 'Password'
                 }),
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: 'password2', className: 'control-label' },
+                  'Re-enter password'
+                ),
+                _react2.default.createElement('input', {
+                  type: 'password',
+                  className: 'form-control',
+                  name: 'password2',
+                  id: 'password2',
+                  placeholder: 'Password'
+                }),
+                _react2.default.createElement('br', null),
                 _react2.default.createElement(
                   'div',
                   { className: 'form-group' },
@@ -175,7 +154,7 @@ var Register = function (_React$Component) {
                 _react2.default.createElement(
                   'div',
                   { className: 'center-text' },
-                  'Already have an account? ',
+                  'Already have an account?  ',
                   _react2.default.createElement(
                     _reactRouterDom.Link,
                     { to: '/login' },
@@ -194,3 +173,9 @@ var Register = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Register;
+
+
+Register.propTypes = {
+  history: _propTypes2.default.object.isRequired,
+  alert: _propTypes2.default.func.isRequired
+};

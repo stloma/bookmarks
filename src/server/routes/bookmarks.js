@@ -75,7 +75,7 @@ bookmarks.patch('/bookmarks', ensureAuthenticated, async (req, res) => {
 
   const errors = validateEdit(site);
   if (errors) {
-    res.status(422).json({ message: `Invalid format: ${errors}` });
+    res.status(422).json(errors);
     return;
   }
 

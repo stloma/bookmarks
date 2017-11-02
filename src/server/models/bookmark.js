@@ -18,9 +18,7 @@ const editFieldType = {
 };
 
 function validUrl(url) {
-  const urlPattern = /^(https?:\/\/){1}[^-][a-z0-9.-]+[^-]\.[a-z]{2,4}$/;
-
-  return url.match(urlPattern);
+  return url.match(/^(https?:\/\/){1}[^-][a-z0-9.-]+[^-]\.[a-z]{2,4}$/);
 }
 
 function validateBookmark(site) {

@@ -10,7 +10,9 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Errors = require('./Errors.jsx');
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20,7 +22,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* globals fetch */
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* globals fetch, document */
 
 var EditBookmark = function (_React$Component) {
   _inherits(EditBookmark, _React$Component);
@@ -30,6 +32,39 @@ var EditBookmark = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (EditBookmark.__proto__ || Object.getPrototypeOf(EditBookmark)).call(this, props));
 
+    _this.handleInputChange = function (event) {
+      var target = event.target;
+      var value = target.value;
+      var name = target.name;
+
+      _this.setState(_defineProperty({}, name, value));
+    };
+
+    _this.handleSubmit = function (event) {
+      event.preventDefault();
+      var form = document.forms.SiteAdd;
+
+      // Remove duplicate tags
+      var tags = new Set(form.tags.value.split(' '));
+      var unique = '';
+      tags.forEach(function (tag) {
+        unique += ' ' + tag;
+      });
+      tags = unique.trim();
+
+      _this.editBookmark({
+        _id: _this.state._id,
+        name: form.name.value,
+        url: form.url.value,
+        comment: form.comment.value,
+        tags: tags
+      });
+    };
+
+    _this.cancel = function () {
+      _this.props.history.goBack();
+    };
+
     var bookmark = _this.props.location.state.bookmark;
 
 
@@ -38,63 +73,33 @@ var EditBookmark = function (_React$Component) {
       name: bookmark.name,
       url: bookmark.url,
       comment: bookmark.comment,
-      tags: bookmark.tags,
-      errors: false
+      tags: bookmark.tags
     };
-    _this.handleSubmit = _this.handleSubmit.bind(_this);
-    _this.cancel = _this.cancel.bind(_this);
-    _this.handleInputChange = _this.handleInputChange.bind(_this);
     return _this;
   }
 
   _createClass(EditBookmark, [{
     key: 'editBookmark',
-    value: function editBookmark(bookmark) {
+    value: async function editBookmark(bookmark) {
       var _this2 = this;
 
-      fetch('/api/bookmarks', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bookmark),
-        credentials: 'include'
-      }).then(function (response) {
+      try {
+        var response = await fetch('/api/bookmarks', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bookmark),
+          credentials: 'include'
+        });
         if (response.ok) {
-          _this2.props.history.push('/');
+          this.props.history.push('/');
         } else {
           response.json().then(function (errors) {
-            _this2.setState({ errors: errors });
+            _this2.props.alert({ messages: errors, type: 'danger' });
           });
         }
-      }).catch(function (err) {
-        console.log('Error in sending data to server: ' + err.message);
-      });
-    }
-  }, {
-    key: 'handleInputChange',
-    value: function handleInputChange(event) {
-      var target = event.target;
-      var value = target.value;
-      var name = target.name;
-
-      this.setState(_defineProperty({}, name, value));
-    }
-  }, {
-    key: 'handleSubmit',
-    value: function handleSubmit(event) {
-      event.preventDefault();
-      var form = document.forms.SiteAdd;
-      this.editBookmark({
-        _id: this.state._id,
-        name: form.name.value,
-        url: form.url.value,
-        comment: form.comment.value,
-        tags: form.tags.value
-      });
-    }
-  }, {
-    key: 'cancel',
-    value: function cancel() {
-      this.props.history.goBack();
+      } catch (error) {
+        this.props.alert({ messages: 'Failed editing bookmark: ' + error, type: 'danger' });
+      }
     }
   }, {
     key: 'render',
@@ -102,7 +107,6 @@ var EditBookmark = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         { id: 'pattern' },
-        this.state.errors && _react2.default.createElement(_Errors.Errors, { closeError: this.closeError, errors: this.state.errors }),
         _react2.default.createElement(
           'div',
           { className: 'container well', id: 'editbookmark' },
@@ -122,38 +126,57 @@ var EditBookmark = function (_React$Component) {
                 { className: 'form-group' },
                 _react2.default.createElement(
                   'label',
-                  null,
+                  { htmlFor: 'name' },
                   'Name:'
                 ),
                 _react2.default.createElement('input', {
-                  onChange: this.handleInputChange, value: this.state.name,
-                  autoFocus: true, type: 'text', className: 'form-control ', name: 'name' }),
+                  onChange: this.handleInputChange,
+                  value: this.state.name,
+                  autoFocus: true,
+                  type: 'text',
+                  className: 'form-control ',
+                  name: 'name',
+                  id: 'name'
+                }),
                 _react2.default.createElement(
                   'label',
-                  null,
+                  { htmlFor: 'url' },
                   'Url:'
                 ),
                 _react2.default.createElement('input', {
-                  onChange: this.handleInputChange, value: this.state.url,
-                  type: 'text', className: 'form-control', name: 'url'
+                  onChange: this.handleInputChange,
+                  value: this.state.url,
+                  type: 'text',
+                  className: 'form-control',
+                  name: 'url',
+                  id: 'url'
                 }),
                 _react2.default.createElement(
                   'label',
-                  null,
+                  { htmlFor: 'comment' },
                   'Comment:'
                 ),
                 _react2.default.createElement('input', {
-                  onChange: this.handleInputChange, value: this.state.comment,
-                  type: 'text', className: 'form-control', name: 'comment'
+                  onChange: this.handleInputChange,
+                  value: this.state.comment,
+                  type: 'text',
+                  className: 'form-control',
+                  name: 'comment',
+                  id: 'comment'
                 }),
                 _react2.default.createElement(
                   'label',
-                  null,
+                  { htmlFor: 'tags' },
                   'Tags:'
                 ),
                 _react2.default.createElement('input', {
-                  onChange: this.handleInputChange, value: this.state.tags,
-                  type: 'text', className: 'form-control', name: 'tags'
+                  onChange: this.handleInputChange,
+                  value: this.state.tags || '',
+                  type: 'text',
+                  className: 'form-control',
+                  name: 'tags',
+                  id: 'tags',
+                  placeholder: 'Space separated (e.g., personal banking finance)'
                 }),
                 _react2.default.createElement(
                   'div',
@@ -185,3 +208,10 @@ var EditBookmark = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = EditBookmark;
+
+
+EditBookmark.propTypes = {
+  history: _propTypes2.default.object.isRequired,
+  location: _propTypes2.default.object.isRequired,
+  alert: _propTypes2.default.func.isRequired
+};

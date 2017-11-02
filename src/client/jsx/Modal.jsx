@@ -19,7 +19,6 @@ const ModalContainer = props => (
           <h4>Are you sure you want to delete</h4><h3>{props.modalTitle.name}?</h3>
         </div>
       </Modal.Body>
-
       <Modal.Footer>
         <button
           className='btn btn-danger modal-delete'

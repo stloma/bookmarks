@@ -3,19 +3,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import Errors from './Errors';
 
 export default class Register extends React.Component {
   constructor() {
     super();
 
     this.state = ({
-      user: [],
-      errors: false
+      user: []
     });
   }
 
-  async createUser(newUser) {
+  createUser = async (newUser) => {
     try {
       const response = await fetch('/api/registeruser', {
         method: 'POST',
@@ -25,25 +23,19 @@ export default class Register extends React.Component {
       if (response.ok) {
         this.props.history.push('/');
       } else {
-        response.json().then((errors) => {
-          this.setState({ errors });
-        });
+        const alerts = await response.json();
+        this.props.alert({ messages: alerts, type: 'danger' });
       }
     } catch (error) {
-      console.log(`Error in sending data to server: ${error.message}`);
+      this.props.alert({ messages: `Error in creating user: ${error}`, type: 'danger' });
     }
-  }
-
-  closeError = (removeError) => {
-    const errors = this.state.errors.filter(error => error !== removeError);
-    this.setState({ errors });
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
     const form = document.forms.UserAdd;
     if (form.password.value !== form.password2.value) {
-      this.setState({ errors: ['Passwords do not match. Please try again'] });
+      this.props.alert({ messages: 'Passwords do not match. Please try again', type: 'danger' });
     } else {
       this.createUser({
         username: form.username.value,
@@ -59,14 +51,10 @@ export default class Register extends React.Component {
   render() {
     return (
       <div id='pattern'>
-        {this.state.errors &&
-        <Errors closeError={this.closeError} errors={this.state.errors} />
-        }
         <div className='container well' id='register'>
           <form method='post' name='UserAdd' onSubmit={this.handleSubmit}>
             <fieldset>
               <legend>Register</legend>
-
               <div className='form-group'>
                 <label htmlFor='username' className='control-label'>Username</label>
                 <input
@@ -114,5 +102,6 @@ export default class Register extends React.Component {
 }
 
 Register.propTypes = {
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  alert: PropTypes.func.isRequired
 };

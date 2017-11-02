@@ -6,14 +6,15 @@ const Search = props => (
   <div>
     <Glyphicon id='remove-search' onClick={props.clearSearch} glyph='remove' />
     <div>
-      <input autoFocus onChange={e => props.searchTerm(e)} type='text' placeholder='Search' />
+      <input autoFocus value={props.searchTerm} onChange={e => props.searchTermFn(e)} type='text' placeholder='Search' />
     </div>
   </div>
 );
 
 Search.propTypes = {
   clearSearch: PropTypes.func.isRequired,
-  searchTerm: PropTypes.func.isRequired
+  searchTermFn: PropTypes.func.isRequired,
+  searchTerm: PropTypes.string.isRequired
 };
 
 export default Search;
