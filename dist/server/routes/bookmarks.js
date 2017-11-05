@@ -1,117 +1,110 @@
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+'use strict';
 
-import express from 'express';
-import { ObjectId } from 'mongodb';
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-import ensureAuthenticated from '../auth/passport';
-import { addBookmark, getBookmarks, deleteBookmark, editBookmark, discover } from '../models/db';
-import { validateBookmark, validateEdit } from '../models/bookmark';
+var _express = require('express');
 
-const bookmarks = express.Router();
+var _express2 = _interopRequireDefault(_express);
 
-bookmarks.get('/protected', ensureAuthenticated, (req, res) => {
+var _mongodb = require('mongodb');
+
+var _passport = require('../auth/passport');
+
+var _passport2 = _interopRequireDefault(_passport);
+
+var _db = require('../models/db');
+
+var _bookmark = require('../models/bookmark');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var bookmarks = _express2.default.Router();
+
+bookmarks.get('/protected', _passport2.default, function (req, res) {
   res.status(200).json({ name: res.req.user.name });
 });
 
-bookmarks.get('/bookmarks', ensureAuthenticated, (() => {
-  var _ref = _asyncToGenerator(function* (req, res) {
-    const userDb = req.session.passport.user;
+bookmarks.get('/bookmarks', _passport2.default, async function (req, res) {
+  var userDb = req.session.passport.user;
 
-    try {
-      const result = yield getBookmarks(userDb);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ message: `Internal Server Error: ${error}` });
-    }
-  });
+  try {
+    var result = await (0, _db.getBookmarks)(userDb);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error: ' + error });
+  }
+});
 
-  return function (_x, _x2) {
-    return _ref.apply(this, arguments);
-  };
-})());
+bookmarks.get('/discover', _passport2.default, async function (req, res) {
+  var userDb = req.session.passport.user;
 
-bookmarks.get('/discover', ensureAuthenticated, (() => {
-  var _ref2 = _asyncToGenerator(function* (req, res) {
-    const userDb = req.session.passport.user;
+  try {
+    var result = await (0, _db.discover)(userDb);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error: ' + error });
+  }
+});
 
-    try {
-      const result = yield discover(userDb);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ message: `Internal Server Error: ${error}` });
-    }
-  });
-
-  return function (_x3, _x4) {
-    return _ref2.apply(this, arguments);
-  };
-})());
-
-bookmarks.post('/bookmarks', ensureAuthenticated, (req, res) => {
-  const userDb = req.session.passport.user;
-  const newBookmark = req.body;
+bookmarks.post('/bookmarks', _passport2.default, function (req, res) {
+  var userDb = req.session.passport.user;
+  var newBookmark = req.body;
   newBookmark.created = new Date().getTime();
-  const errors = validateBookmark(newBookmark);
+  var errors = (0, _bookmark.validateBookmark)(newBookmark);
   if (errors) {
     res.status(400).json(errors);
     return;
   }
 
-  addBookmark(`bookmarks.${userDb}`, newBookmark).then(() => res.status(200).send('1 record inserted')).catch(error => res.status(500).json({ message: `Internal Server Error: ${error}` }));
+  (0, _db.addBookmark)('bookmarks.' + userDb, newBookmark).then(function () {
+    return res.status(200).send('1 record inserted');
+  }).catch(function (error) {
+    return res.status(500).json({ message: 'Internal Server Error: ' + error });
+  });
 });
 
-bookmarks.delete('/bookmarks/:id', ensureAuthenticated, (() => {
-  var _ref3 = _asyncToGenerator(function* (req, res) {
-    const userDb = req.session.passport.user;
-    let bookmarkId;
-    try {
-      bookmarkId = new ObjectId(req.params.id);
-    } catch (error) {
-      res.status(422).json({ message: `Invalid id format: ${error}` });
+bookmarks.delete('/bookmarks/:id', _passport2.default, async function (req, res) {
+  var userDb = req.session.passport.user;
+  var bookmarkId = void 0;
+  try {
+    bookmarkId = new _mongodb.ObjectId(req.params.id);
+  } catch (error) {
+    res.status(422).json({ message: 'Invalid id format: ' + error });
+    return;
+  }
+
+  try {
+    await (0, _db.deleteBookmark)('bookmarks.' + userDb, bookmarkId);
+    res.status(200).json({ message: 'Successfully deleted object' });
+  } catch (error) {
+    if (error.message === '404') {
+      res.status(404).json({ message: 'Bookmark not found' });
       return;
     }
+    res.status(500).json({ message: 'Internal Server Error: ' + error });
+  }
+});
 
-    try {
-      yield deleteBookmark(`bookmarks.${userDb}`, bookmarkId);
-      res.status(200).json({ message: 'Successfully deleted object' });
-    } catch (error) {
-      if (error.message === '404') {
-        res.status(404).json({ message: 'Bookmark not found' });
-        return;
-      }
-      res.status(500).json({ message: `Internal Server Error: ${error}` });
-    }
-  });
+bookmarks.patch('/bookmarks', _passport2.default, async function (req, res) {
+  var userDb = req.session.passport.user;
+  var site = req.body;
+  site.updated = new Date().getTime();
 
-  return function (_x5, _x6) {
-    return _ref3.apply(this, arguments);
-  };
-})());
+  var errors = (0, _bookmark.validateEdit)(site);
+  if (errors) {
+    res.status(422).json(errors);
+    return;
+  }
 
-bookmarks.patch('/bookmarks', ensureAuthenticated, (() => {
-  var _ref4 = _asyncToGenerator(function* (req, res) {
-    const userDb = req.session.passport.user;
-    const site = req.body;
-    site.updated = new Date().getTime();
+  try {
+    await (0, _db.editBookmark)('bookmarks.' + userDb, site);
+    res.status(200).json({ message: 'Edit site success' });
+  } catch (error) {
+    res.status(422).json({ message: 'Invalid id format: ' + error });
+  }
+});
 
-    const errors = validateEdit(site);
-    if (errors) {
-      res.status(422).json(errors);
-      return;
-    }
-
-    try {
-      yield editBookmark(`bookmarks.${userDb}`, site);
-      res.status(200).json({ message: 'Edit site success' });
-    } catch (error) {
-      res.status(422).json({ message: `Invalid id format: ${error}` });
-    }
-  });
-
-  return function (_x7, _x8) {
-    return _ref4.apply(this, arguments);
-  };
-})());
-
-export default bookmarks;
+exports.default = bookmarks;
 //# sourceMappingURL=bookmarks.js.map

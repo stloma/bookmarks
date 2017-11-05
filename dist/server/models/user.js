@@ -1,56 +1,54 @@
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+'use strict';
 
-import bcrypt from 'bcrypt';
-import { db } from './db';
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.validateRegistration = exports.CreateUser = exports.ComparePassword = undefined;
 
-export const ComparePassword = (() => {
-  var _ref = _asyncToGenerator(function* (candidatePassword, hash) {
-    try {
-      const isMatch = yield bcrypt.compare(candidatePassword, hash);
-      return isMatch;
-    } catch (error) {
-      throw Error(error);
-    }
-  });
+var _bcrypt = require('bcrypt');
 
-  return function ComparePassword(_x, _x2) {
-    return _ref.apply(this, arguments);
-  };
-})();
+var _bcrypt2 = _interopRequireDefault(_bcrypt);
 
-export const CreateUser = (() => {
-  var _ref2 = _asyncToGenerator(function* (user) {
-    const newUser = user;
-    try {
-      const passHash = yield bcrypt.hash(newUser.password, 10);
-      newUser.password = passHash;
-      return yield db.bookmarkDb.collection('users').insertOne(newUser);
-    } catch (error) {
-      throw Error(error);
-    }
-  });
+var _db = require('./db');
 
-  return function CreateUser(_x3) {
-    return _ref2.apply(this, arguments);
-  };
-})();
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const registerFieldType = {
+var ComparePassword = exports.ComparePassword = async function ComparePassword(candidatePassword, hash) {
+  try {
+    var isMatch = await _bcrypt2.default.compare(candidatePassword, hash);
+    return isMatch;
+  } catch (error) {
+    throw Error(error);
+  }
+};
+
+var CreateUser = exports.CreateUser = async function CreateUser(user) {
+  var newUser = user;
+  try {
+    var passHash = await _bcrypt2.default.hash(newUser.password, 10);
+    newUser.password = passHash;
+    return await _db.db.bookmarkDb.collection('users').insertOne(newUser);
+  } catch (error) {
+    throw Error(error);
+  }
+};
+
+var registerFieldType = {
   username: 'required',
   password: 'required',
   created: 'required'
 };
 
 function validateRegistration(site) {
-  const errors = [];
-  const emailPattern = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
-  Object.keys(registerFieldType).forEach(field => {
-    const type = registerFieldType[field];
+  var errors = [];
+  var emailPattern = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+  Object.keys(registerFieldType).forEach(function (field) {
+    var type = registerFieldType[field];
     if (type === 'required' && !site[field]) {
-      errors.push(`${field} is required`);
+      errors.push(field + ' is required');
     }
   });
-  const email = site.email;
+  var email = site.email;
   if (email && !email.match(emailPattern)) {
     errors.push('Please enter a valid email address');
   }
@@ -60,5 +58,5 @@ function validateRegistration(site) {
   return null;
 }
 
-export { validateRegistration };
+exports.validateRegistration = validateRegistration;
 //# sourceMappingURL=user.js.map

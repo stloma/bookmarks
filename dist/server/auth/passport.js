@@ -1,3 +1,8 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -7,5 +12,5 @@ function ensureAuthenticated(req, res, next) {
   return null;
 }
 
-export default ensureAuthenticated;
+exports.default = ensureAuthenticated;
 //# sourceMappingURL=passport.js.map

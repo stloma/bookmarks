@@ -1,85 +1,102 @@
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+'use strict';
 
-import express from 'express';
-import bodyParser from 'body-parser';
-import SourceMapSupport from 'source-map-support';
-import path from 'path';
-import session from 'express-session';
-import passport from 'passport';
-import cookieParser from 'cookie-parser';
+var _express = require('express');
 
-import { ComparePassword } from './models/user';
-import user from './routes/user';
-import bookmarks from './routes/bookmarks';
-import { db, store } from './models/db';
+var _express2 = _interopRequireDefault(_express);
 
-SourceMapSupport.install();
+var _bodyParser = require('body-parser');
 
-const app = express();
-const LocalStrategy = require('passport-local').Strategy;
+var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-app.use(express.static('dist'));
-app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+var _sourceMapSupport = require('source-map-support');
 
-app.use(session({
+var _sourceMapSupport2 = _interopRequireDefault(_sourceMapSupport);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _expressSession = require('express-session');
+
+var _expressSession2 = _interopRequireDefault(_expressSession);
+
+var _passport = require('passport');
+
+var _passport2 = _interopRequireDefault(_passport);
+
+var _cookieParser = require('cookie-parser');
+
+var _cookieParser2 = _interopRequireDefault(_cookieParser);
+
+var _user = require('./models/user');
+
+var _user2 = require('./routes/user');
+
+var _user3 = _interopRequireDefault(_user2);
+
+var _bookmarks = require('./routes/bookmarks');
+
+var _bookmarks2 = _interopRequireDefault(_bookmarks);
+
+var _db = require('./models/db');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_sourceMapSupport2.default.install();
+
+var app = (0, _express2.default)();
+var LocalStrategy = require('passport-local').Strategy;
+
+app.use(_express2.default.static('dist'));
+app.use((0, _cookieParser2.default)());
+app.use(_bodyParser2.default.urlencoded({ extended: true }));
+app.use(_bodyParser2.default.json());
+
+app.use((0, _expressSession2.default)({
   secret: 'jkfd09U&*^F&*56<F5>8df*(DF789SCy89S89c89d*SF9',
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
   },
-  store,
+  store: _db.store,
   saveUninitialized: true,
   resave: true
 }));
 
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(_passport2.default.initialize());
+app.use(_passport2.default.session());
 
-passport.serializeUser((loginUser, done) => {
+_passport2.default.serializeUser(function (loginUser, done) {
   done(null, loginUser._id);
 });
 
-passport.deserializeUser((() => {
-  var _ref = _asyncToGenerator(function* (loginUser, done) {
-    done(null, loginUser);
-  });
+_passport2.default.deserializeUser(async function (loginUser, done) {
+  done(null, loginUser);
+});
 
-  return function (_x, _x2) {
-    return _ref.apply(this, arguments);
-  };
-})());
-
-passport.use(new LocalStrategy((() => {
-  var _ref2 = _asyncToGenerator(function* (username, password, done) {
-    try {
-      const userExists = yield db.bookmarkDb.collection('users').findOne({ username });
-      if (!userExists) {
-        return done(null, false);
-      }
-      const isMatch = yield ComparePassword(password, userExists.password);
-      if (!isMatch) {
-        return done(null, false);
-      }
-      return done(null, userExists);
-    } catch (error) {
-      return done(error);
+_passport2.default.use(new LocalStrategy(async function (username, password, done) {
+  try {
+    var userExists = await _db.db.bookmarkDb.collection('users').findOne({ username: username });
+    if (!userExists) {
+      return done(null, false);
     }
-  });
+    var isMatch = await (0, _user.ComparePassword)(password, userExists.password);
+    if (!isMatch) {
+      return done(null, false);
+    }
+    return done(null, userExists);
+  } catch (error) {
+    return done(error);
+  }
+}));
 
-  return function (_x3, _x4, _x5) {
-    return _ref2.apply(this, arguments);
-  };
-})()));
+app.use('/api', _user3.default);
+app.use('/api', _bookmarks2.default);
 
-app.use('/api', user);
-app.use('/api', bookmarks);
-
-app.listen(3000, '127.0.0.1', () => {
+app.listen(3000, '127.0.0.1', function () {
   console.log('App started on port 3000');
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve('dist/index.html'));
+app.get('*', function (req, res) {
+  res.sendFile(_path2.default.resolve('dist/index.html'));
 });
 //# sourceMappingURL=server.js.map

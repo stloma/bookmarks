@@ -1,5 +1,10 @@
+'use strict';
 
-const siteFieldType = {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var siteFieldType = {
   name: 'required',
   url: 'required',
   created: 'required',
@@ -8,7 +13,7 @@ const siteFieldType = {
   comment: 'optional'
 };
 
-const editFieldType = {
+var editFieldType = {
   name: 'required',
   url: 'required',
   updated: 'required',
@@ -22,14 +27,14 @@ function validUrl(url) {
 }
 
 function validateBookmark(site) {
-  const errors = [];
-  Object.keys(siteFieldType).forEach(field => {
-    const type = siteFieldType[field];
+  var errors = [];
+  Object.keys(siteFieldType).forEach(function (field) {
+    var type = siteFieldType[field];
     if (type === 'required' && !site[field]) {
-      errors.push(`${field} is required`);
+      errors.push(field + ' is required');
     }
   });
-  const url = site.url;
+  var url = site.url;
   if (url && !validUrl(url)) {
     errors.push('Please enter a valid url. E.g., http://www.example.com');
   }
@@ -40,14 +45,14 @@ function validateBookmark(site) {
 }
 
 function validateEdit(site) {
-  const errors = [];
-  Object.keys(editFieldType).forEach(field => {
-    const type = editFieldType[field];
+  var errors = [];
+  Object.keys(editFieldType).forEach(function (field) {
+    var type = editFieldType[field];
     if (type === 'required' && !site[field]) {
-      errors.push(`${field} is required`);
+      errors.push(field + ' is required');
     }
   });
-  const url = site.url;
+  var url = site.url;
   if (url && !validUrl(url)) {
     errors.push('Please enter a valid url. E.g., http://www.example.com');
   }
@@ -57,5 +62,6 @@ function validateEdit(site) {
   return null;
 }
 
-export { validateBookmark, validateEdit };
+exports.validateBookmark = validateBookmark;
+exports.validateEdit = validateEdit;
 //# sourceMappingURL=bookmark.js.map

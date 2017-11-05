@@ -1,166 +1,161 @@
-let getBookmarks = (() => {
-  var _ref = _asyncToGenerator(function* (userDb) {
-    try {
-      // Get user bookmarks
-      const bookmarks = yield db.bookmarkDb.collection(`bookmarks.${userDb}`).find().toArray();
+'use strict';
 
-      // Tally up tag counts for tagcloud
-      const result = countBy(bookmarks.map(function (bookmark) {
-        return bookmark.tags;
-      }).join(' ').split(' '));
-      const tagcount = Object.keys(result).map(function (tag) {
-        return { value: tag, count: result[tag] };
-      });
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.editBookmark = exports.deleteBookmark = exports.getBookmarks = exports.addBookmark = exports.store = exports.db = exports.discover = undefined;
 
-      return { tagcount, records: bookmarks };
-    } catch (error) {
-      throw Error(error);
-    }
-  });
+var _expressSession = require('express-session');
 
-  return function getBookmarks(_x) {
-    return _ref.apply(this, arguments);
-  };
-})();
+var _expressSession2 = _interopRequireDefault(_expressSession);
 
-let discover = (() => {
-  var _ref2 = _asyncToGenerator(function* (userDb) {
-    try {
-      // Get all collections
-      const collections = yield db.bookmarkDb.listCollections().toArray();
+var _mongodb = require('mongodb');
 
-      // Filter out all bookmark collections that don't belong to the current user
-      const ids = collections.filter(function (collection) {
-        return collection.name.startsWith('bookmarks') && !collection.name.endsWith(userDb);
-      });
+var _connectMongodbSession = require('connect-mongodb-session');
 
-      // Get an array of promises
-      const promises = ids.map(function (id) {
-        return db.bookmarkDb.collection(id.name).find().toArray();
-      });
+var _connectMongodbSession2 = _interopRequireDefault(_connectMongodbSession);
 
-      // Resolve all promises
-      const result = yield Promise.all(promises);
+var _lodash = require('lodash');
 
-      // Create one array from the array of users' bookmarks
-      const allBookmarks = [].concat(...result);
+var _favicon = require('../scripts/favicon');
 
-      // Count tags for tagcloud
-      const counts = countBy(allBookmarks.map(function (bookmark) {
-        return bookmark.tags;
-      }).join(' ').split(' '));
-      const tagcount = Object.keys(counts).map(function (tag) {
-        return { value: tag, count: result[tag] };
-      });
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-      return { tagcount, records: allBookmarks };
-    } catch (error) {
-      throw Error(error);
-    }
-  });
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-  return function discover(_x2) {
-    return _ref2.apply(this, arguments);
-  };
-})();
+var MongoDBStore = (0, _connectMongodbSession2.default)(_expressSession2.default);
 
-let addBookmark = (() => {
-  var _ref3 = _asyncToGenerator(function* (userDb, bookmark) {
-    try {
-      const newBookmark = bookmark;
-      const userId = userDb.split('.')[1];
-
-      const res = yield db.bookmarkDb.collection(userDb).insertOne(newBookmark);
-
-      // if this is a new bookmark, download favicon and add createdby property
-      if (!newBookmark.favicon) {
-        // Download favicon
-        const _id = new ObjectId(res.insertedId);
-        const result = yield download(newBookmark.url, _id);
-
-        // If the fetch result of the favicon was not 200, use the default image
-        newBookmark.favicon = result === 200 ? `${_id}.ico` : 'default-favicon.png';
-
-        // Add created by property to bookmarks for /discover
-        const name = yield db.bookmarkDb.collection('users').findOne({ _id: new ObjectId(userId) }, { _id: 0, username: 1 });
-        newBookmark.createdBy = name.username;
-        yield db.bookmarkDb.collection(userDb).updateOne({ _id }, { $set: { favicon: newBookmark.favicon, createdBy: newBookmark.createdBy } });
-      }
-    } catch (error) {
-      throw Error(error);
-    }
-  });
-
-  return function addBookmark(_x3, _x4) {
-    return _ref3.apply(this, arguments);
-  };
-})();
-
-let deleteBookmark = (() => {
-  var _ref4 = _asyncToGenerator(function* (userDb, _id) {
-    const result = yield db.bookmarkDb.collection(userDb).deleteOne({ _id });
-
-    // If bookmark doesn't exist, return 404
-    const error = result.result.n === 1 ? null : 404;
-
-    if (error) throw new Error(error);
-
-    return result;
-  });
-
-  return function deleteBookmark(_x5, _x6) {
-    return _ref4.apply(this, arguments);
-  };
-})();
-
-let editBookmark = (() => {
-  var _ref5 = _asyncToGenerator(function* (userDb, site) {
-    const bookmarkId = new ObjectId(site._id);
-
-    try {
-      yield db.bookmarkDb.collection(userDb).updateOne({ _id: bookmarkId }, { $set: {
-          name: site.name,
-          url: site.url,
-          comment: site.comment,
-          tags: site.tags,
-          update: site.updated
-        } });
-    } catch (error) {
-      throw Error(error);
-    }
-  });
-
-  return function editBookmark(_x7, _x8) {
-    return _ref5.apply(this, arguments);
-  };
-})();
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
-import session from 'express-session';
-import { MongoClient, ObjectId } from 'mongodb';
-import connectMongo from 'connect-mongodb-session';
-import { countBy } from 'lodash';
-import { download } from '../scripts/favicon';
-
-const MongoDBStore = connectMongo(session);
-
-const store = new MongoDBStore({
+var store = new MongoDBStore({
   uri: 'mongodb://localhost/bookmarkapp',
   collection: 'sessions'
 });
 
-store.on('error', error => {
+store.on('error', function (error) {
   if (error) throw error;
 });
 
-const db = {};
+var db = {};
 
-MongoClient.connect('mongodb://localhost/bookmarkapp').then(connection => {
+_mongodb.MongoClient.connect('mongodb://localhost/bookmarkapp').then(function (connection) {
   db.bookmarkDb = connection;
-}).catch(error => {
-  console.log(`Mongo connect error: ${error}`);
+}).catch(function (error) {
+  console.log('Mongo connect error: ' + error);
 });
 
-export { discover, db, store, addBookmark, getBookmarks, deleteBookmark, editBookmark };
+async function getBookmarks(userDb) {
+  try {
+    // Get user bookmarks
+    var bookmarks = await db.bookmarkDb.collection('bookmarks.' + userDb).find().toArray();
+
+    // Tally up tag counts for tagcloud
+    var result = (0, _lodash.countBy)(bookmarks.map(function (bookmark) {
+      return bookmark.tags;
+    }).join(' ').split(' '));
+    var tagcount = Object.keys(result).map(function (tag) {
+      return { value: tag, count: result[tag] };
+    });
+
+    return { tagcount: tagcount, records: bookmarks };
+  } catch (error) {
+    throw Error(error);
+  }
+}
+
+async function discover(userDb) {
+  try {
+    var _ref;
+
+    // Get all collections
+    var collections = await db.bookmarkDb.listCollections().toArray();
+
+    // Filter out all bookmark collections that don't belong to the current user
+    var ids = collections.filter(function (collection) {
+      return collection.name.startsWith('bookmarks') && !collection.name.endsWith(userDb);
+    });
+
+    // Get an array of promises
+    var promises = ids.map(function (id) {
+      return db.bookmarkDb.collection(id.name).find().toArray();
+    });
+
+    // Resolve all promises
+    var result = await Promise.all(promises);
+
+    // Create one array from the array of users' bookmarks
+    var allBookmarks = (_ref = []).concat.apply(_ref, _toConsumableArray(result));
+
+    // Count tags for tagcloud
+    var counts = (0, _lodash.countBy)(allBookmarks.map(function (bookmark) {
+      return bookmark.tags;
+    }).join(' ').split(' '));
+    var tagcount = Object.keys(counts).map(function (tag) {
+      return { value: tag, count: result[tag] };
+    });
+
+    return { tagcount: tagcount, records: allBookmarks };
+  } catch (error) {
+    throw Error(error);
+  }
+}
+
+async function addBookmark(userDb, bookmark) {
+  try {
+    var newBookmark = bookmark;
+    var userId = userDb.split('.')[1];
+
+    var res = await db.bookmarkDb.collection(userDb).insertOne(newBookmark);
+
+    // if this is a new bookmark, download favicon and add createdby property
+    if (!newBookmark.favicon) {
+      // Download favicon
+      var _id = new _mongodb.ObjectId(res.insertedId);
+      var result = await (0, _favicon.download)(newBookmark.url, _id);
+
+      // If the fetch result of the favicon was not 200, use the default image
+      newBookmark.favicon = result === 200 ? _id + '.ico' : 'default-favicon.png';
+
+      // Add created by property to bookmarks for /discover
+      var name = await db.bookmarkDb.collection('users').findOne({ _id: new _mongodb.ObjectId(userId) }, { _id: 0, username: 1 });
+      newBookmark.createdBy = name.username;
+      await db.bookmarkDb.collection(userDb).updateOne({ _id: _id }, { $set: { favicon: newBookmark.favicon, createdBy: newBookmark.createdBy } });
+    }
+  } catch (error) {
+    throw Error(error);
+  }
+}
+
+async function deleteBookmark(userDb, _id) {
+  var result = await db.bookmarkDb.collection(userDb).deleteOne({ _id: _id });
+
+  // If bookmark doesn't exist, return 404
+  var error = result.result.n === 1 ? null : 404;
+
+  if (error) throw new Error(error);
+
+  return result;
+}
+
+async function editBookmark(userDb, site) {
+  var bookmarkId = new _mongodb.ObjectId(site._id);
+
+  try {
+    await db.bookmarkDb.collection(userDb).updateOne({ _id: bookmarkId }, { $set: {
+        name: site.name,
+        url: site.url,
+        comment: site.comment,
+        tags: site.tags,
+        update: site.updated
+      } });
+  } catch (error) {
+    throw Error(error);
+  }
+}
+
+exports.discover = discover;
+exports.db = db;
+exports.store = store;
+exports.addBookmark = addBookmark;
+exports.getBookmarks = getBookmarks;
+exports.deleteBookmark = deleteBookmark;
+exports.editBookmark = editBookmark;
 //# sourceMappingURL=db.js.map
