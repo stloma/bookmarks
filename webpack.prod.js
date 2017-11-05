@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-const MinifyPlugin = require("babel-minify-webpack-plugin");
 
 module.exports = {
   entry: {
@@ -18,6 +17,7 @@ module.exports = {
       debug: false
     }),
     new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true,
       parallel: true,
       uglifyOptions: {
         ie8: false,
@@ -39,9 +39,10 @@ module.exports = {
       'process.env': {
         NODE_ENV: JSON.stringify('production')
       }
-    })
+    }),
+    new webpack.optimize.ModuleConcatenationPlugin()
   ],
-  /* devtool: 'source-map', */
+  devtool: 'source-map',
   resolve: {
     extensions: ['.js', '.jsx']
   },
