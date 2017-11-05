@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const MinifyPlugin = require("babel-minify-webpack-plugin");
 
 module.exports = {
   entry: {
@@ -40,7 +41,7 @@ module.exports = {
       }
     })
   ],
-  devtool: 'source-map',
+  /* devtool: 'source-map', */
   resolve: {
     extensions: ['.js', '.jsx']
   },
@@ -50,8 +51,7 @@ module.exports = {
         test: /\.jsx$/,
         loader: 'babel-loader',
         query: {
-          presets: ['react', 'es2015', 'es2017'],
-          plugins: ['transform-async-to-generator', 'transform-class-properties', 'transform-object-rest-spread']
+          presets: ['react', 'es2015', 'stage-2'],
         }
       }
     ]
