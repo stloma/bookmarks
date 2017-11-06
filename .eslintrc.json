@@ -4,6 +4,7 @@
     "rules": {
       "comma-dangle": ["error", "never"],
       "quote-props": ["error", "as-needed", { "numbers": true } ],
+      "semi": ["error", "never"],
       "jsx-quotes": ["error", "prefer-single"],
       "no-underscore-dangle": ["error", {"allow": ["_id"]}],
       "react/forbid-prop-types": [0],

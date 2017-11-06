@@ -1,7 +1,7 @@
 /* globals fetch, document */
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const AddBookmark = (props) => {
   async function createBookmark(newbookmark) {
@@ -11,38 +11,38 @@ const AddBookmark = (props) => {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(newbookmark),
         credentials: 'include'
-      });
+      })
       if (response.ok) {
-        props.history.push('/');
+        props.history.push('/')
       } else {
-        const errors = await response.json();
-        props.alert({ messages: errors, type: 'danger' });
+        const errors = await response.json()
+        props.alert({ messages: errors, type: 'danger' })
       }
     } catch (error) {
-      props.alert({ messages: `Error in sending data to server: ${error.message}`, type: 'danger' });
+      props.alert({ messages: `Error in sending data to server: ${error.message}`, type: 'danger' })
     }
   }
 
   function handleSubmit(event) {
-    event.preventDefault();
-    const form = document.forms.SiteAdd;
+    event.preventDefault()
+    const form = document.forms.SiteAdd
 
     // Filter duplicate tags
-    let tags = new Set(form.tags.value.split(' '));
-    let unique = '';
-    tags.forEach((tag) => { unique += ` ${tag}`; });
-    tags = unique.trim();
+    let tags = new Set(form.tags.value.split(' '))
+    let unique = ''
+    tags.forEach((tag) => { unique += ` ${tag}` })
+    tags = unique.trim()
 
     createBookmark({
       name: form.name.value,
       url: form.url.value,
       comment: form.comment.value,
       tags: form.tags.value
-    });
+    })
   }
 
   function cancel() {
-    props.history.goBack();
+    props.history.goBack()
   }
 
   return (
@@ -102,12 +102,12 @@ const AddBookmark = (props) => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
 AddBookmark.propTypes = {
   history: PropTypes.object.isRequired,
   alert: PropTypes.func.isRequired
-};
+}
 
-export default AddBookmark;
+export default AddBookmark

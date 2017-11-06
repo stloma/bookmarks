@@ -13,6 +13,13 @@ export default class Navigation extends React.Component {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    // Clear alerts if navigating to another page
+    if (this.props.location.pathname !== nextProps.location.pathname) {
+      this.props.alert();
+    }
+  }
+
   toggleNavCollapse = () => {
     this.setState({ navCollapsed: !this.state.navCollapsed });
   }
@@ -71,5 +78,6 @@ Navigation.propTypes = {
   searchToggle: PropTypes.func.isRequired,
   alert: PropTypes.func.isRequired,
   disableSearchLink: PropTypes.bool.isRequired,
-  disableTagsLink: PropTypes.bool.isRequired
+  disableTagsLink: PropTypes.bool.isRequired,
+  location: PropTypes.object.isRequired
 };

@@ -124,7 +124,6 @@ export default class App extends React.Component {
             bookmarks={this.state.bookmarks}
             onDeleteClick={this.onDeleteClick}
             searchTerm={this.state.searchTerm}
-            searchTermFn={this.searchTerm}
             filterByTag={this.state.filterByTag}
             alert={this.props.alert}
           />

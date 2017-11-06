@@ -184,7 +184,6 @@ export default class BookmarkTable extends React.Component {
           edit={this.edit}
           save={this.save}
           bookmark={bookmark}
-          searchTermFn={this.props.searchTermFn}
         />));
 
     let tagHeading;
@@ -229,6 +228,5 @@ BookmarkTable.propTypes = {
   filterByTag: PropTypes.string.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   alert: PropTypes.func.isRequired,
-  searchTerm: PropTypes.string.isRequired,
-  searchTermFn: PropTypes.func.isRequired
+  searchTerm: PropTypes.string.isRequired
 };

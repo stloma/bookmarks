@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const DashboardPlugin = require('webpack-dashboard/plugin');
 const path = require('path');
 
 module.exports = {
@@ -11,7 +12,8 @@ module.exports = {
     filename: 'js/app.bundle.js'
   },
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'js/vendor.bundle.js' })
+    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'js/vendor.bundle.js' }),
+    new DashboardPlugin()
   ],
   devServer: {
     port: 8000,

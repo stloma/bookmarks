@@ -126,11 +126,14 @@ class Container extends React.Component {
   }
 
   alert = (alerts) => {
-    if (alerts.messages instanceof Array) {
+    if (!alerts) {
+      this.setState({ alerts: { messages: '', type: '' } });
+    } else if (alerts.messages instanceof Array) {
       this.setState({ alerts });
     } else {
       const message = alerts;
       message.messages = [message.messages];
+      console.log(message);
       this.setState({ alerts: message });
     }
   }
@@ -150,6 +153,7 @@ class Container extends React.Component {
           clearAlert={this.clearAlert}
           alerts={this.state.alerts}
           alert={this.alert}
+          location={this.props.location}
         />
         <Main
           loggedIn={this.state.loggedIn}
@@ -168,7 +172,8 @@ class Container extends React.Component {
 }
 
 Container.propTypes = {
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired
 };
 
 const ContainerWithRouter = withRouter(Container);

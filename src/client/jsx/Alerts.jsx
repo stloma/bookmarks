@@ -8,7 +8,7 @@ const Alerts = (props) => {
   return (
     <div className='error'>
       {props.alerts.messages.map(alert =>
-        (<Alert key={alert} bsStyle={props.alerts.type} onDismiss={() => clearAlert(alert)}>
+        (<Alert key={`${alert}Heading`} bsStyle={props.alerts.type} onDismiss={() => clearAlert(alert)}>
           <h4>{alert}</h4>
         </Alert>)
       )}

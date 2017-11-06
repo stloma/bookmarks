@@ -6,7 +6,7 @@ const siteFieldType = {
   author: 'optional',
   tags: 'optional',
   comment: 'optional'
-};
+}
 
 const editFieldType = {
   name: 'required',
@@ -15,46 +15,46 @@ const editFieldType = {
   author: 'optional',
   tags: 'optional',
   comment: 'optional'
-};
+}
 
 function validUrl(url) {
-  return url.match(/^(https?:\/\/){1}[^-][a-z0-9.-]+[^-]\.[a-z]{2,4}$/);
+  return url.match(/^(https?:\/\/){1}[^-][a-z0-9.-]+[^-]\.[a-z]{2,4}/)
 }
 
 function validateBookmark(site) {
-  const errors = [];
+  const errors = []
   Object.keys(siteFieldType).forEach((field) => {
-    const type = siteFieldType[field];
+    const type = siteFieldType[field]
     if (type === 'required' && !site[field]) {
-      errors.push(`${field} is required`);
+      errors.push(`${field} is required`)
     }
-  });
-  const url = site.url;
+  })
+  const url = site.url
   if (url && !validUrl(url)) {
-    errors.push('Please enter a valid url. E.g., http://www.example.com');
+    errors.push('Please enter a valid url. E.g., example.com')
   }
   if (errors.length > 0) {
-    return errors;
+    return errors
   }
-  return null;
+  return null
 }
 
 function validateEdit(site) {
-  const errors = [];
+  const errors = []
   Object.keys(editFieldType).forEach((field) => {
-    const type = editFieldType[field];
+    const type = editFieldType[field]
     if (type === 'required' && !site[field]) {
-      errors.push(`${field} is required`);
+      errors.push(`${field} is required`)
     }
-  });
-  const url = site.url;
+  })
+  const url = site.url
   if (url && !validUrl(url)) {
-    errors.push('Please enter a valid url. E.g., http://www.example.com');
+    errors.push('Please enter a valid url. E.g., http://www.example.com')
   }
   if (errors.length > 0) {
-    return errors;
+    return errors
   }
-  return null;
+  return null
 }
 
-export { validateBookmark, validateEdit };
+export { validateBookmark, validateEdit }
