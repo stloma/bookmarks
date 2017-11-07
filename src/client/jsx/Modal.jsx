@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Modal } from 'react-bootstrap';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Modal } from 'react-bootstrap'
 
 const ModalContainer = props => (
   <div>
@@ -35,13 +35,13 @@ const ModalContainer = props => (
       </Modal.Footer>
     </Modal>
   </div>
-);
+)
 
 ModalContainer.propTypes = {
   closeModal: PropTypes.func.isRequired,
   confirmDelete: PropTypes.func.isRequired,
   modalTitle: PropTypes.object.isRequired,
   showModal: PropTypes.bool.isRequired
-};
+}
 
-export default ModalContainer;
+export default ModalContainer

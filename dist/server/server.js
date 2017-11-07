@@ -52,8 +52,10 @@ app.use((0, _cookieParser2.default)());
 app.use(_bodyParser2.default.urlencoded({ extended: true }));
 app.use(_bodyParser2.default.json());
 
+var config = require('./.session-secret');
+
 app.use((0, _expressSession2.default)({
-  secret: 'jkfd09U&*^F&*56<F5>8df*(DF789SCy89S89c89d*SF9',
+  secret: config.secret,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
   },

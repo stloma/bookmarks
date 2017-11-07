@@ -1,5 +1,5 @@
-const webpack = require('webpack');
-const path = require('path');
+const webpack = require('webpack')
+const path = require('path')
 
 module.exports = {
   entry: {
@@ -54,9 +54,9 @@ module.exports = {
         test: /\.jsx$/,
         loader: 'babel-loader',
         query: {
-          presets: ['react', 'es2015', 'stage-2'],
+          presets: ['react', 'es2015', 'stage-2']
         }
       }
     ]
   }
-};
+}

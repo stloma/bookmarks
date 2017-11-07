@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Alert } from 'react-bootstrap';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Alert } from 'react-bootstrap'
 
 const Alerts = (props) => {
   // Avoids eslint no-unused-prop-types false positives on stateless functional components
-  const { clearAlert } = props;
+  const { clearAlert } = props
   return (
     <div className='error'>
       {props.alerts.messages.map(alert =>
@@ -13,12 +13,12 @@ const Alerts = (props) => {
         </Alert>)
       )}
     </div>
-  );
-};
+  )
+}
 
 Alerts.propTypes = {
   alerts: PropTypes.object.isRequired,
   clearAlert: PropTypes.func.isRequired
-};
+}
 
-export default Alerts;
+export default Alerts

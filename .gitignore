@@ -1,3 +1,5 @@
 dist/images/favicons/*
 !dist/images/favicons/default-favicon.png
 node_modules/
+src/server/.session-secret.json
+dist/server/.session-secret.json
