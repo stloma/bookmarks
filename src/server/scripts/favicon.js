@@ -6,7 +6,7 @@ export default function download(url, id) {
   let address = url.match(/^(https?:\/\/){1}[^-][a-z0-9.-]+[^-]\.[a-z]{2,4}/)
   if (address) {
     address = address[0]
-  }
+  } else { throw Error('Malformed url') }
   const options = {
     uri: `${address}/favicon.ico`,
     encoding: null,

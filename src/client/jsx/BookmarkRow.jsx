@@ -100,7 +100,7 @@ const BookmarkRow = (props) => {
         <div className='card-heading'>
           <a href={props.bookmark.url} target='_blank'>
             <img
-              alt={`${props.bookmark.name} favicon`}
+              alt=' X '
               className='favicon'
               src={`/images/favicons/${props.bookmark.favicon}`}
               height='25'
