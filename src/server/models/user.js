@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import { ObjectId } from 'mongodb'
 import { db } from './db'
 
 export const ComparePassword = async (candidatePassword, hash) => {
@@ -16,6 +17,17 @@ export const CreateUser = async (user) => {
     const userExists = await db.bookmarkDb.collection('users').findOne({ username: newUser.username })
     if (userExists) return 11000
     return await db.bookmarkDb.collection('users').insertOne(newUser)
+  } catch (error) { throw Error(error) }
+}
+
+export const ChangePassword = async (userDb, password) => {
+  try {
+    const passHash = await bcrypt.hash(password.password, 10)
+
+    await db.bookmarkDb.collection('users').updateOne(
+      { _id: new ObjectId(userDb) },
+      { $set: { password: passHash } }
+    )
   } catch (error) { throw Error(error) }
 }
 

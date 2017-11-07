@@ -15,8 +15,10 @@ export default class Navigation extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     // Clear alerts if navigating to another page
-    if (this.props.location.pathname !== nextProps.location.pathname) {
-      this.props.alert()
+    if (this.props.alerts.messages.length > 0) {
+      if (this.props.location.pathname !== nextProps.location.pathname) {
+        this.props.alert()
+      }
     }
   }
 

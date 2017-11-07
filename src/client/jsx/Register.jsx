@@ -1,16 +1,16 @@
 /* globals fetch, document */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 export default class Register extends React.Component {
   constructor() {
-    super();
+    super()
 
     this.state = ({
       user: []
-    });
+    })
   }
 
   createUser = async (newUser) => {
@@ -19,33 +19,33 @@ export default class Register extends React.Component {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newUser)
-      });
+      })
       if (response.ok) {
-        this.props.history.push('/');
+        this.props.history.push('/')
       } else {
-        const alerts = await response.json();
-        this.props.alert({ messages: alerts, type: 'danger' });
+        const alerts = await response.json()
+        this.props.alert({ messages: alerts, type: 'danger' })
       }
     } catch (error) {
-      this.props.alert({ messages: `Error in creating user: ${error}`, type: 'danger' });
+      this.props.alert({ messages: `Error in creating user: ${error}`, type: 'danger' })
     }
   }
 
   handleSubmit = (event) => {
-    event.preventDefault();
-    const form = document.forms.UserAdd;
+    event.preventDefault()
+    const form = document.forms.UserAdd
     if (form.password.value !== form.password2.value) {
-      this.props.alert({ messages: 'Passwords do not match. Please try again', type: 'danger' });
+      this.props.alert({ messages: 'Passwords do not match. Please try again', type: 'danger' })
     } else {
       this.createUser({
         username: form.username.value,
         password: form.password.value
-      });
+      })
     }
   }
 
   cancel = () => {
-    this.props.history.goBack();
+    this.props.history.goBack()
   }
 
   render() {
@@ -97,11 +97,11 @@ export default class Register extends React.Component {
           </form>
         </div>
       </div>
-    );
+    )
   }
 }
 
 Register.propTypes = {
   history: PropTypes.object.isRequired,
   alert: PropTypes.func.isRequired
-};
+}

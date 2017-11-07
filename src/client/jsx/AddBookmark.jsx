@@ -157,7 +157,9 @@ export default class AddBookmark extends React.Component {
             <div className='col-md-4'>
               <div id='recommendations' className='alert-info'>
                 <span id='recommend-header'>
-                  <Glyphicon glyph='star' /> <p>Recommended for You</p>
+                  <Glyphicon glyph='star' />
+                  <p>Recommended for You</p>
+                  <Glyphicon glyph='star' />
                 </span>
                 {recommendations}
               </div>

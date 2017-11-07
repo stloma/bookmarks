@@ -54,5 +54,21 @@ user.post('/registeruser', async function (req, res) {
   }
 });
 
+user.post('/changepassword', _passport4.default, async function (req, res) {
+  var userDb = req.session.passport.user;
+  var newPassword = req.body;
+
+  // const inputErrors = validateRegistration(newUser)
+
+  // if (inputErrors) { res.status(400).json(inputErrors) }
+
+  try {
+    await (0, _user.ChangePassword)(userDb, newPassword);
+    res.status(200).json('Password changed successfully');
+  } catch (error) {
+    res.status(500).json('Internal Server Error: ' + error);
+  }
+});
+
 exports.default = user;
 //# sourceMappingURL=user.js.map

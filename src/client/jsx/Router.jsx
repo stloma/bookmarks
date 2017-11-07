@@ -9,6 +9,7 @@ import App from './App'
 import Navigation from './Navigation'
 import Footer from './Footer'
 import AddBookmark from './AddBookmark'
+import ChangePassword from './ChangePassword'
 import Login from './Login'
 import Register from './Register'
 import Loading from './Loading'
@@ -64,6 +65,7 @@ const Main = (props) => {
         <PropsRoute exact path='/addbookmark' alert={props.alert} component={AddBookmark} />
         <PropsRoute exact path='/editbookmark' alert={props.alert} component={EditBookmark} />
         <PropsRoute exact path='/login' alert={props.alert} component={Login} />
+        <PropsRoute exact path='/changepassword' alert={props.alert} component={ChangePassword} />
         <PropsRoute exact path='/register' alert={props.alert} component={Register} />
         <Route path='/deletebookmark/:id' component={App} />
         <Route path='*' component={NoMatch} />

@@ -3,11 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.validateRegistration = exports.CreateUser = exports.ComparePassword = undefined;
+exports.validateRegistration = exports.ChangePassword = exports.CreateUser = exports.ComparePassword = undefined;
 
 var _bcrypt = require('bcrypt');
 
 var _bcrypt2 = _interopRequireDefault(_bcrypt);
+
+var _mongodb = require('mongodb');
 
 var _db = require('./db');
 
@@ -30,6 +32,16 @@ var CreateUser = exports.CreateUser = async function CreateUser(user) {
     var userExists = await _db.db.bookmarkDb.collection('users').findOne({ username: newUser.username });
     if (userExists) return 11000;
     return await _db.db.bookmarkDb.collection('users').insertOne(newUser);
+  } catch (error) {
+    throw Error(error);
+  }
+};
+
+var ChangePassword = exports.ChangePassword = async function ChangePassword(userDb, password) {
+  try {
+    var passHash = await _bcrypt2.default.hash(password.password, 10);
+
+    await _db.db.bookmarkDb.collection('users').updateOne({ _id: new _mongodb.ObjectId(userDb) }, { $set: { password: passHash } });
   } catch (error) {
     throw Error(error);
   }

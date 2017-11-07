@@ -2,7 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Glyphicon } from 'react-bootstrap'
+import { Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Logout from './Logout'
 
@@ -54,6 +54,10 @@ const NewBookmark = () => (
   </li>
 )
 
+const ChangePassword = () => (
+  <div className='dropdown-item'><Glyphicon glyph='plus' /> Change Password</div>
+)
+
 const Discover = () => {
   const pathname = window.location.pathname
   const active = pathname === '/discover' ? { backgroundColor: '#4aaeee' } : {}
@@ -67,12 +71,21 @@ const Discover = () => {
 const NavLinks = (props) => {
   const pathname = window.location.pathname
   let links
+
+  const user = <span><Glyphicon glyph='user' /> Account</span>
   switch (pathname) {
     case '/addbookmark':
     case '/editbookmark':
       links =
         (<ul className='nav navbar-nav navbar-right'>
-          <li><Logout alert={props.alert} /></li>
+          <li>
+            <div className='account-dropdown'>
+              <DropdownButton title={user} id='bg-nested-dropdown'>
+                <MenuItem eventKey='1'><ChangePassword /></MenuItem>
+                <MenuItem eventKey='2'><Logout alert={props.alert} /></MenuItem>
+              </DropdownButton>
+            </div>
+          </li>
         </ul>)
       break
     case '/login':
@@ -97,7 +110,14 @@ const NavLinks = (props) => {
             searchToggle={props.searchToggle}
             disableSearchLink={props.disableSearchLink}
           />
-          <li><Logout alert={props.alert} /></li>
+          <li>
+            <div className='account-dropdown'>
+              <DropdownButton title={user} id='bg-nested-dropdown'>
+                <MenuItem href='/changepassword'><ChangePassword /></MenuItem>
+                <MenuItem eventKey='2'><Logout alert={props.alert} /></MenuItem>
+              </DropdownButton>
+            </div>
+          </li>
         </ul>)
 
       if (!props.loggedIn) {

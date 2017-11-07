@@ -1,31 +1,31 @@
 /* globals fetch, window */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 export default class Login extends React.Component {
   constructor() {
-    super();
+    super()
     this.state = {
       username: '',
       password: ''
-    };
+    }
   }
 
   handleInputChange = (event) => {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
+    const target = event.target
+    const value = target.value
+    const name = target.name
 
     this.setState({
       [name]: value
-    });
+    })
   }
 
   handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = `username=${this.state.username}&password=${this.state.password}`;
+    event.preventDefault()
+    const data = `username=${this.state.username}&password=${this.state.password}`
     const fetchData = {
       method: 'post',
       credentials: 'include',
@@ -33,19 +33,19 @@ export default class Login extends React.Component {
         'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
       },
       body: data
-    };
+    }
     try {
-      const response = await fetch('/api/login', fetchData);
+      const response = await fetch('/api/login', fetchData)
       if (response.ok) {
-        window.location.replace('/');
+        window.location.replace('/')
       } else if (response.status === 401) {
-        this.props.alert({ messages: 'Username or password incorrect', type: 'danger' });
+        this.props.alert({ messages: 'Username or password incorrect', type: 'danger' })
       } else if (response.status === 400) {
-        this.props.alert({ messages: 'Please enter a username and password', type: 'danger' });
+        this.props.alert({ messages: 'Please enter a username and password', type: 'danger' })
       } else {
-        this.props.alert({ messages: `Login failed with code: ${response.status}`, type: 'danger' });
+        this.props.alert({ messages: `Login failed with code: ${response.status}`, type: 'danger' })
       }
-    } catch (error) { this.props.alert({ messages: `Login failed: ${error}`, type: 'danger' }); }
+    } catch (error) { this.props.alert({ messages: `Login failed: ${error}`, type: 'danger' }) }
   }
 
   render() {
@@ -90,10 +90,10 @@ export default class Login extends React.Component {
           </form>
         </div>
       </div>
-    );
+    )
   }
 }
 
 Login.propTypes = {
   alert: PropTypes.func.isRequired
-};
+}

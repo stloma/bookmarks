@@ -1,7 +1,7 @@
 import express from 'express'
 import passport from 'passport'
 
-import { CreateUser, validateRegistration } from '../models/user'
+import { CreateUser, ChangePassword, validateRegistration } from '../models/user'
 import ensureAuthenticated from '../auth/passport'
 
 const user = express.Router()
@@ -31,6 +31,22 @@ user.post('/registeruser', async (req, res) => {
     } else {
       res.status(200).json(`Successfully registered ${result.username}`)
     }
+  } catch (error) {
+    res.status(500).json(`Internal Server Error: ${error}`)
+  }
+})
+
+user.post('/changepassword', ensureAuthenticated, async (req, res) => {
+  const userDb = req.session.passport.user
+  const newPassword = req.body
+
+  // const inputErrors = validateRegistration(newUser)
+
+  // if (inputErrors) { res.status(400).json(inputErrors) }
+
+  try {
+    await ChangePassword(userDb, newPassword)
+    res.status(200).json('Password changed successfully')
   } catch (error) {
     res.status(500).json(`Internal Server Error: ${error}`)
   }

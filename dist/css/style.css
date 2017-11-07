@@ -35,9 +35,62 @@
   height: 4em;
 }
 
+.navbar li div {
+  padding-top: 9px;
+  font-size: 14px;
+  color: white !important;
+  cursor: pointer;
+  height: 4em;
+  margin-left: 5px;
+}
+
 .navbar li a:hover {
   color: #dcdcdc !important;
 }
+.account-dropdown ul li {
+  padding: 1em;
+}
+.account-dropdown ul li a:hover {
+  background-color: white !important;
+}
+.account-dropdown li a {
+  padding-top: 0;
+  height: 2em;
+  color: black !important;
+  background-color: white;
+}
+.account-dropdown li div {
+  padding: 3px;
+  padding-top: 0;
+  height: 2em;
+  font-size: 14px;
+  color: black !important;
+  margin-left: 5px;
+  padding-top: -5px;
+}
+.account-dropdown li div:hover {
+  color: #666 !important;
+}
+.account-dropdown .dropdown-menu {
+  margin: -1em;
+}
+.account-dropdown .dropdown button {
+  background: none;
+  color: white;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+.account-dropdown .dropdown button:focus {
+  background: none !important;
+  background-color: none;
+  border: 0;
+  box-shadow: none;
+}
+
+
+
 
 /* Display Controls */
 #display-controls {
@@ -103,11 +156,13 @@
 #recommendations span {
   margin-bottom: 2em;
 }
-#recommend-header .glyphicon {
+#recommendations .glyphicon {
   color: #f15928;
   font-size: 15px;
-  margin-right: 6px;
+  margin-right: 1em;
+  margin-left: 1em;
 }
+
 
 /* Tag cloud / Search */
 #search {
@@ -195,13 +250,13 @@ label {
   font-weight: bold;
 }
 
-#addbookmark, #login, #register, #editbookmark {
+#addbookmark, #login, #register, #editbookmark, #change-password {
   box-shadow: 1px 1px 10px 1px #888;
   max-width: 500px;
   margin-top: 2em;
 }
 
-#login input, #addbookmark input, #editbookmark input, #register button {
+#login input, #addbookmark input, #editbookmark input, #register button, #change-password button {
   background-color: #999;
   color: white;
   margin-bottom: 5px;
