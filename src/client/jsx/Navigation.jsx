@@ -1,34 +1,34 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import NavLinks from './NavLinks';
-import Alerts from './Alerts';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import NavLinks from './NavLinks'
+import Alerts from './Alerts'
 
 export default class Navigation extends React.Component {
   constructor() {
-    super();
+    super()
 
     this.state = ({
       navCollapsed: true
-    });
+    })
   }
 
   componentWillReceiveProps(nextProps) {
     // Clear alerts if navigating to another page
     if (this.props.location.pathname !== nextProps.location.pathname) {
-      this.props.alert();
+      this.props.alert()
     }
   }
 
   toggleNavCollapse = () => {
-    this.setState({ navCollapsed: !this.state.navCollapsed });
+    this.setState({ navCollapsed: !this.state.navCollapsed })
   }
 
   render() {
-    const { navCollapsed } = this.state;
+    const { navCollapsed } = this.state
     const {
       alert, loggedIn, tagsToggle, searchToggle, disableSearchLink, disableTagsLink
-    } = this.props;
+    } = this.props
 
     return (
       <div id='nav-alerts-wrapper'>
@@ -36,7 +36,7 @@ export default class Navigation extends React.Component {
           <div className='container'>
             <div className='navbar-header'>
               <Link to='/'>
-                <span id='logo'>Bookmark Manager</span>
+                <span id='logo'>My Bookmarks</span>
               </Link>
               <button
                 aria-expanded='false'
@@ -66,7 +66,7 @@ export default class Navigation extends React.Component {
           <Alerts clearAlert={this.props.clearAlert} alerts={this.props.alerts} />
         }
       </div>
-    );
+    )
   }
 }
 
@@ -80,4 +80,4 @@ Navigation.propTypes = {
   disableSearchLink: PropTypes.bool.isRequired,
   disableTagsLink: PropTypes.bool.isRequired,
   location: PropTypes.object.isRequired
-};
+}

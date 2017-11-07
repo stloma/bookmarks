@@ -33,7 +33,7 @@ bookmarks.get('/bookmarks', _passport2.default, async function (req, res) {
     var result = await (0, _db.getBookmarks)(userDb);
     res.json(result);
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error: ' + error });
+    res.status(500).json('Internal Server Error: ' + error);
   }
 });
 
@@ -44,7 +44,7 @@ bookmarks.get('/discover', _passport2.default, async function (req, res) {
     var result = await (0, _db.discover)(userDb);
     res.json(result);
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error: ' + error });
+    res.status(500).json('Internal Server Error: ' + error);
   }
 });
 
@@ -52,6 +52,9 @@ bookmarks.post('/bookmarks', _passport2.default, function (req, res) {
   var userDb = req.session.passport.user;
   var newBookmark = req.body;
   newBookmark.created = new Date().getTime();
+
+  if (!newBookmark.url.match(/^https?/)) newBookmark.url = 'http://' + newBookmark.url;
+
   var errors = (0, _bookmark.validateBookmark)(newBookmark);
   if (errors) {
     res.status(400).json(errors);
@@ -61,7 +64,7 @@ bookmarks.post('/bookmarks', _passport2.default, function (req, res) {
   (0, _db.addBookmark)('bookmarks.' + userDb, newBookmark).then(function () {
     return res.status(200).send('1 record inserted');
   }).catch(function (error) {
-    return res.status(500).json({ message: 'Internal Server Error: ' + error });
+    return res.status(500).json('Internal Server Error: ' + error);
   });
 });
 
@@ -71,19 +74,19 @@ bookmarks.delete('/bookmarks/:id', _passport2.default, async function (req, res)
   try {
     bookmarkId = new _mongodb.ObjectId(req.params.id);
   } catch (error) {
-    res.status(422).json({ message: 'Invalid id format: ' + error });
+    res.status(422).json('Invalid id format: ' + error);
     return;
   }
 
   try {
     await (0, _db.deleteBookmark)('bookmarks.' + userDb, bookmarkId);
-    res.status(200).json({ message: 'Successfully deleted object' });
+    res.status(200).json('Successfully deleted object');
   } catch (error) {
     if (error.message === '404') {
-      res.status(404).json({ message: 'Bookmark not found' });
+      res.status(404).json('Bookmark not found');
       return;
     }
-    res.status(500).json({ message: 'Internal Server Error: ' + error });
+    res.status(500).json('Internal Server Error: ' + error);
   }
 });
 
@@ -100,9 +103,9 @@ bookmarks.patch('/bookmarks', _passport2.default, async function (req, res) {
 
   try {
     await (0, _db.editBookmark)('bookmarks.' + userDb, site);
-    res.status(200).json({ message: 'Edit site success' });
+    res.status(200).json('Edit site success');
   } catch (error) {
-    res.status(422).json({ message: 'Invalid id format: ' + error });
+    res.status(422).json('Invalid id format: ' + error);
   }
 });
 

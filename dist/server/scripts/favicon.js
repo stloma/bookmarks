@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.download = download;
+exports.default = download;
 
 var _requestPromise = require('request-promise');
 
@@ -20,8 +20,12 @@ var _fsExtra2 = _interopRequireDefault(_fsExtra);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function download(url, id) {
+  var address = url.match(/^(https?:\/\/){1}[^-][a-z0-9.-]+[^-]\.[a-z]{2,4}/);
+  if (address) {
+    address = address[0];
+  }
   var options = {
-    uri: url + '/favicon.ico',
+    uri: address + '/favicon.ico',
     encoding: null,
     followRedirect: true,
     timeout: 5000,
@@ -36,40 +40,4 @@ function download(url, id) {
     return error;
   });
 }
-
-/*
-return rp(options)
-.then(result => {
-  return Promise.all([
-    result,
-    fs.outputFile(path.join(__dirname, `../../../dist/images/favicons/${id}.ico`), result)
-  ])
-})
-.then(result => result)
-.catch(error => console.log(error))
-}
-*/
-/*
-request({
-url: url + '/favicon.ico',
-encoding: null,
-followRedirect: true,
-timeout: 5000,
-maxRedirect: 5
-}, function (err, res, body) {
-if (err) {
-callback(err)
-} else if (res.statusCode === 200) {
-fs.writeFile(
-  path.join(__dirname, `../../../dist/images/favicons/${id}.ico`), body, function (err) {
-    if (err) {
-      callback(err)
-    }
-    callback(null, res.statusCode)
-  })
-} else {
-callback(null, res.statusCode)
-}
-})
-*/
 //# sourceMappingURL=favicon.js.map

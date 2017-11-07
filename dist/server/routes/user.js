@@ -44,16 +44,13 @@ user.post('/registeruser', async function (req, res) {
 
   try {
     var result = await (0, _user.CreateUser)(newUser);
-
-    res.status(200).json('Successfully registered ' + result.username);
-  } catch (error) {
-    if (error.code === 11000) {
-      // If the same username already exists
-      var inputType = error.message.split('$')[1].split(' ')[0];
-      res.status(409).json([inputType + ' already registered']);
-      return;
+    if (result === 11000) {
+      res.status(409).json([newUser.username + ' already registered, please try another name.']);
+    } else {
+      res.status(200).json('Successfully registered ' + result.username);
     }
-    res.status(500).json({ message: 'Internal Server Error: ' + error });
+  } catch (error) {
+    res.status(500).json('Internal Server Error: ' + error);
   }
 });
 

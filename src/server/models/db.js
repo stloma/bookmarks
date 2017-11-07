@@ -33,7 +33,9 @@ async function getBookmarks(userDb) {
 
     // Tally up tag counts for tagcloud
     const result = countBy(bookmarks.map(bookmark => bookmark.tags).join(' ').split(' '))
+
     const tagcount = Object.keys(result).map(tag => ({ value: tag, count: result[tag] }))
+      .filter(name => name.value !== '')
 
     return ({ tagcount, records: bookmarks })
   } catch (error) { throw Error(error) }
@@ -61,6 +63,7 @@ async function discover(userDb) {
     // Count tags for tagcloud
     const counts = countBy(allBookmarks.map(bookmark => bookmark.tags).join(' ').split(' '))
     const tagcount = Object.keys(counts).map(tag => ({ value: tag, count: result[tag] }))
+      .filter(name => name.value !== '')
 
     return { tagcount, records: allBookmarks }
   } catch (error) { throw Error(error) }

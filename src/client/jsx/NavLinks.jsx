@@ -1,13 +1,13 @@
 /* globals window */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Glyphicon } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import Logout from './Logout';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Glyphicon } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import Logout from './Logout'
 
 const SearchLink = (props) => {
-  const active = { backgroundColor: '#4aaeee' };
+  const active = { backgroundColor: '#4aaeee' }
   return (
     <li>
       {props.disableSearchLink ? (
@@ -20,16 +20,16 @@ const SearchLink = (props) => {
         </a>
       )}
     </li>
-  );
-};
+  )
+}
 
 SearchLink.propTypes = {
   disableSearchLink: PropTypes.bool.isRequired,
   searchToggle: PropTypes.func.isRequired
-};
+}
 
 const TagsLink = (props) => {
-  const active = { backgroundColor: '#4aaeee' };
+  const active = { backgroundColor: '#4aaeee' }
   return (
     <li>
       {props.disableTagsLink ? (
@@ -40,50 +40,50 @@ const TagsLink = (props) => {
         <a onClick={props.tagsToggle}><Glyphicon glyph='cloud' /> Tag Cloud</a>
       )}
     </li>
-  );
-};
+  )
+}
 
 TagsLink.propTypes = {
   disableTagsLink: PropTypes.bool.isRequired,
   tagsToggle: PropTypes.func.isRequired
-};
+}
 
 const NewBookmark = () => (
   <li>
     <Link to='/addbookmark'><Glyphicon glyph='plus' /> New Bookmark</Link>
   </li>
-);
+)
 
 const Discover = () => {
-  const pathname = window.location.pathname;
-  const active = pathname === '/discover' ? { backgroundColor: '#4aaeee' } : {};
+  const pathname = window.location.pathname
+  const active = pathname === '/discover' ? { backgroundColor: '#4aaeee' } : {}
   return (
     <li>
       <Link style={active} to='/discover'><Glyphicon glyph='globe' /> Discover</Link>
     </li>
-  );
-};
+  )
+}
 
 const NavLinks = (props) => {
-  const pathname = window.location.pathname;
-  let links;
+  const pathname = window.location.pathname
+  let links
   switch (pathname) {
     case '/addbookmark':
     case '/editbookmark':
       links =
         (<ul className='nav navbar-nav navbar-right'>
           <li><Logout alert={props.alert} /></li>
-        </ul>);
-      break;
+        </ul>)
+      break
     case '/login':
-      links = null;
-      break;
+      links = null
+      break
     case '/register':
       links =
         (<ul className='nav navbar-nav navbar-right'>
           <li><Link to='/login'>Login</Link></li>
-        </ul>);
-      break;
+        </ul>)
+      break
     default:
       links =
         (<ul className='nav navbar-nav navbar-right'>
@@ -98,14 +98,14 @@ const NavLinks = (props) => {
             disableSearchLink={props.disableSearchLink}
           />
           <li><Logout alert={props.alert} /></li>
-        </ul>);
+        </ul>)
 
       if (!props.loggedIn) {
-        links = null;
+        links = null
       }
   }
-  return (<div>{links}</div>);
-};
+  return (<div>{links}</div>)
+}
 
 NavLinks.propTypes = {
   disableSearchLink: PropTypes.bool.isRequired,
@@ -114,6 +114,6 @@ NavLinks.propTypes = {
   tagsToggle: PropTypes.func.isRequired,
   searchToggle: PropTypes.func.isRequired,
   alert: PropTypes.func.isRequired
-};
+}
 
-export default NavLinks;
+export default NavLinks

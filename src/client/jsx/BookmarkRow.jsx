@@ -26,25 +26,24 @@ const BookmarkRow = (props) => {
   const { filterByTag } = props
   if (props.bookmark.tags) {
     tags = props.bookmark.tags.split(' ').map(tag =>
-      (<button
+      (<a
         onClick={() => filterByTag(tag)}
         key={props.bookmark._id + tag}
-        type='button'
-        className='btn btn-xs tag-button'
+        className='tag-button'
       >
         {tag}
-      </button>),
+      </a>),
     )
   }
 
   let { comment } = props.bookmark
-  let overlay
+  let commentOverlay
   if (comment.length > 20) {
     // Shorten displayed comment and add tooltip to see entire comment
     const tmp = comment.substr(0, 21)
-    overlay = comment
+    commentOverlay = comment
     comment = tmp
-    overlay = (<Tooltip id='comment-tooltip'>{overlay}</Tooltip>)
+    commentOverlay = (<Tooltip id='comment-tooltip'>{commentOverlay}</Tooltip>)
   }
 
   const pathname = window.location.pathname
@@ -77,7 +76,7 @@ const BookmarkRow = (props) => {
       buttons =
         (<div>
           <div className='card-created-by'>
-            Created by: {props.bookmark.createdBy}
+            <h5>CREATED BY:</h5> {props.bookmark.createdBy}
           </div>
           <div className='card-buttons'>
             <OverlayTrigger placement='bottom' overlay={save} >
@@ -111,15 +110,15 @@ const BookmarkRow = (props) => {
           </a>
         </div>
         <div className='card-comment'>
-          {comment}
-          {overlay &&
-          <OverlayTrigger placement='bottom' overlay={overlay} >
-            <span className='overlay read-more'> ...read more</span>
+          <h5>COMMENTS:</h5> {comment}
+          {commentOverlay &&
+          <OverlayTrigger placement='bottom' overlay={commentOverlay} >
+            <span className='overlay read-more'> ...</span>
           </OverlayTrigger>
           }
         </div>
         <div className='card-tags'>
-          {tags}
+          <h5>TAGS:</h5> {tags}
         </div>
         <div className='card-date'>
           {new Date(props.bookmark.created).toLocaleDateString()}

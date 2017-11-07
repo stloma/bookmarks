@@ -23,7 +23,7 @@ var editFieldType = {
 };
 
 function validUrl(url) {
-  return url.match(/^(https?:\/\/){1}[^-][a-z0-9.-]+[^-]\.[a-z]{2,4}$/);
+  return url.match(/^(https?:\/\/){1}[^-][a-z0-9.-]+[^-]\.[a-z]{2,4}/);
 }
 
 function validateBookmark(site) {
@@ -36,7 +36,7 @@ function validateBookmark(site) {
   });
   var url = site.url;
   if (url && !validUrl(url)) {
-    errors.push('Please enter a valid url. E.g., http://www.example.com');
+    errors.push('Please enter a valid url. E.g., example.com');
   }
   if (errors.length > 0) {
     return errors;

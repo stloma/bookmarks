@@ -19,6 +19,8 @@ var _lodash = require('lodash');
 
 var _favicon = require('../scripts/favicon');
 
+var _favicon2 = _interopRequireDefault(_favicon);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -51,8 +53,11 @@ async function getBookmarks(userDb) {
     var result = (0, _lodash.countBy)(bookmarks.map(function (bookmark) {
       return bookmark.tags;
     }).join(' ').split(' '));
+
     var tagcount = Object.keys(result).map(function (tag) {
       return { value: tag, count: result[tag] };
+    }).filter(function (name) {
+      return name.value !== '';
     });
 
     return { tagcount: tagcount, records: bookmarks };
@@ -90,6 +95,8 @@ async function discover(userDb) {
     }).join(' ').split(' '));
     var tagcount = Object.keys(counts).map(function (tag) {
       return { value: tag, count: result[tag] };
+    }).filter(function (name) {
+      return name.value !== '';
     });
 
     return { tagcount: tagcount, records: allBookmarks };
@@ -109,7 +116,7 @@ async function addBookmark(userDb, bookmark) {
     if (!newBookmark.favicon) {
       // Download favicon
       var _id = new _mongodb.ObjectId(res.insertedId);
-      var result = await (0, _favicon.download)(newBookmark.url, _id);
+      var result = await (0, _favicon2.default)(newBookmark.url, _id);
 
       // If the fetch result of the favicon was not 200, use the default image
       newBookmark.favicon = result === 200 ? _id + '.ico' : 'default-favicon.png';

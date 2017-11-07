@@ -27,6 +27,8 @@ var CreateUser = exports.CreateUser = async function CreateUser(user) {
   try {
     var passHash = await _bcrypt2.default.hash(newUser.password, 10);
     newUser.password = passHash;
+    var userExists = await _db.db.bookmarkDb.collection('users').findOne({ username: newUser.username });
+    if (userExists) return 11000;
     return await _db.db.bookmarkDb.collection('users').insertOne(newUser);
   } catch (error) {
     throw Error(error);
