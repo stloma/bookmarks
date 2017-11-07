@@ -1,2 +1,3 @@
 dist/images/favicons/*
+!dist/images/favicons/default-favicon.png
 node_modules/
