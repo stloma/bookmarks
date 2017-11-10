@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import Logout from './Logout'
+import Logout from '../Logout/Logout'
 
 const SearchLink = (props) => {
   const active = { backgroundColor: '#4aaeee' }
@@ -114,7 +114,7 @@ const NavLinks = (props) => {
             <div className='account-dropdown'>
               <DropdownButton title={user} id='bg-nested-dropdown'>
                 <MenuItem href='/changepassword'><ChangePassword /></MenuItem>
-                <MenuItem eventKey='2'><Logout alert={props.alert} /></MenuItem>
+                <MenuItem><Logout alert={props.alert} /></MenuItem>
               </DropdownButton>
             </div>
           </li>

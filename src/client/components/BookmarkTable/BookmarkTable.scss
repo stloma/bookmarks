@@ -1,0 +1,40 @@
+/* Display Controls */
+#display-controls {
+  width: 100%;
+  margin-bottom: 2em;
+  text-align: right;
+  font-size: 15px;
+  font-weight: 600;
+  color: black;
+}
+#display-controls div {
+  display: inline-block;
+}
+#display-controls .glyphicon {
+}
+#display-controls .glyphicon:hover {
+}
+#sort-title {
+  margin-right: 1em;
+  font-size: 17px;
+}
+#sort-by {
+}
+#display-controls button {
+  background-color: white;
+  background-image: none;
+  color: black !important;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  min-width: 230px;
+  text-align: left;
+}
+#clear-tags {
+  margin-right: 8px;
+}
+#clear-tags button {
+  min-width: 100px;
+  background-color: #029acf;
+  color: white !important;
+}
+

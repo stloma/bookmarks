@@ -3,7 +3,7 @@ const path = require('path')
 
 module.exports = {
   entry: {
-    app: ['babel-polyfill', './src/client/jsx/Router.jsx'],
+    app: ['babel-polyfill', './src/client/components/Router/Router.jsx', './src/client/styles/base.scss'],
     vendor: ['react', 'react-dom', 'react-router', 'react-bootstrap', 'react-router-bootstrap']
   },
   output: {
@@ -56,6 +56,11 @@ module.exports = {
         query: {
           presets: ['react', 'es2015', 'stage-2']
         }
+      },
+      {
+        test: /\.scss$/,
+        exclude: /(node_modules)/,
+        loaders: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
   }

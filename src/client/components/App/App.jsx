@@ -4,8 +4,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { TagCloud } from 'react-tagcloud'
 import { Glyphicon } from 'react-bootstrap'
-import Search from './Search'
-import BookmarkTable from './BookmarkTable'
+import Search from '../Search/Search'
+import BookmarkTable from '../BookmarkTable/BookmarkTable'
 
 export default class App extends React.Component {
   constructor() {

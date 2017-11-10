@@ -1,0 +1,41 @@
+.account-dropdown ul li {
+  padding: 1em;
+}
+.account-dropdown li a {
+  padding-top: 0;
+  height: 2em;
+  color: black !important;
+  background-color: white;
+}
+.account-dropdown ul li a:hover {
+  background-color: white !important;
+}
+.account-dropdown li div {
+  padding: 3px;
+  padding-top: 0;
+  height: 2em;
+  font-size: 14px;
+  color: black !important;
+  margin-left: 5px;
+  padding-top: -5px;
+}
+.account-dropdown li div:hover {
+  color: #666 !important;
+}
+.account-dropdown .dropdown-menu {
+  margin: -1em;
+}
+.account-dropdown .dropdown button {
+  background: none;
+  color: white;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+.account-dropdown .dropdown button:focus, button:hover {
+  background: none !important;
+  background-color: none;
+  border: 0;
+  box-shadow: none;
+}

@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import NavLinks from './NavLinks'
-import Alerts from './Alerts'
+import NavLinks from '../NavLinks/NavLinks'
+import Alerts from '../Alerts/Alerts'
 
 export default class Navigation extends React.Component {
   constructor() {

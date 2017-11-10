@@ -1,0 +1,39 @@
+.navbar {
+  background-color: #cd332d;
+  margin: 0;
+  border-radius: 0;
+  border: 0;
+  box-shadow: 0px 2px 2px #000000;
+}
+.navbar-header {
+  padding-top: 1.4em;
+}
+
+#logo {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+}
+.navbar-header {
+}
+.navbar-header a:hover {
+  text-decoration: none;
+}
+
+.navbar li a {
+  padding-top: 1.4em;
+  font-size: 14px;
+  color: white !important;
+  cursor: pointer;
+  height: 4em;
+}
+
+.navbar li div {
+  padding-top: 9px;
+  font-size: 14px;
+  color: white !important;
+  cursor: pointer;
+  height: 4em;
+  margin-left: 5px;
+}
+

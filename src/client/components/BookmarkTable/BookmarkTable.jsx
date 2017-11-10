@@ -5,8 +5,8 @@ import PropTypes from 'prop-types'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom'
 import { sortBy as _sortBy } from 'lodash'
-import ModalContainer from './Modal'
-import BookmarkRow from './BookmarkRow'
+import ModalContainer from '../Modal/Modal'
+import BookmarkRow from '../BookmarkRow/BookmarkRow'
 
 // Lookup table for types of sorts; selected by dropdown
 const sortLookup = {
