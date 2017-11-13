@@ -93,8 +93,9 @@ async function discover(userDb) {
     var counts = (0, _lodash.countBy)(allBookmarks.map(function (bookmark) {
       return bookmark.tags;
     }).join(' ').split(' '));
+
     var tagcount = Object.keys(counts).map(function (tag) {
-      return { value: tag, count: result[tag] };
+      return { value: tag, count: counts[tag] };
     }).filter(function (name) {
       return name.value !== '';
     });
