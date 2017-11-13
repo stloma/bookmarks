@@ -19,3 +19,24 @@
     color: black;
   }
 }
+
+@media screen and (max-width: 768px)  {
+  #account-dropdown {
+    position: relative;
+    z-index: 99;
+    button {
+      padding-bottom: 2em;
+    }
+    .dropdown-menu li a {
+      background-color: white;
+    }
+    .dropdown-menu li a {
+      padding: 1em;
+    }
+    .dropdown-item {
+      text-align: center;
+      padding: 0;
+      color: black;
+    }
+  }
+}
