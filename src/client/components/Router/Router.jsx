@@ -62,7 +62,12 @@ const Main = (props) => {
             )}
           />)
         )}
-        <PropsRoute exact path='/addbookmark' alert={props.alert} component={AddBookmark} />
+        <PropsRoute
+          exact path='/addbookmark'
+          loadingToggle={props.loadingToggle}
+          alert={props.alert}
+          component={AddBookmark}
+        />
         <PropsRoute exact path='/editbookmark' alert={props.alert} component={EditBookmark} />
         <PropsRoute exact path='/login' alert={props.alert} component={Login} />
         <PropsRoute exact path='/changepassword' alert={props.alert} component={ChangePassword} />
@@ -83,6 +88,7 @@ const Main = (props) => {
 
 Main.propTypes = {
   loggedIn: PropTypes.bool.isRequired,
+  loadingToggle: PropTypes.func.isRequired,
   alert: PropTypes.func.isRequired
 }
 

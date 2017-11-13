@@ -68,23 +68,33 @@ const Discover = () => {
   )
 }
 
+const Account = (props) => {
+  const user = <span><Glyphicon glyph='user' /> Account</span>
+  return (
+    <div id='account-dropdown'>
+      <DropdownButton title={user} id='bg-nested-dropdown'>
+        <MenuItem eventKey='1'><ChangePassword /></MenuItem>
+        <MenuItem eventKey='2'><Logout alert={props.alert} /></MenuItem>
+      </DropdownButton>
+    </div>
+  )
+}
+
+Account.propTypes = {
+  alert: PropTypes.func.isRequired
+}
+
 const NavLinks = (props) => {
   const pathname = window.location.pathname
   let links
 
-  const user = <span><Glyphicon glyph='user' /> Account</span>
   switch (pathname) {
     case '/addbookmark':
     case '/editbookmark':
       links =
         (<ul className='nav navbar-nav navbar-right'>
           <li>
-            <div className='account-dropdown'>
-              <DropdownButton title={user} id='bg-nested-dropdown'>
-                <MenuItem eventKey='1'><ChangePassword /></MenuItem>
-                <MenuItem eventKey='2'><Logout alert={props.alert} /></MenuItem>
-              </DropdownButton>
-            </div>
+            <Account alert={props.alert} />
           </li>
         </ul>)
       break
@@ -111,12 +121,7 @@ const NavLinks = (props) => {
             disableSearchLink={props.disableSearchLink}
           />
           <li>
-            <div className='account-dropdown'>
-              <DropdownButton title={user} id='bg-nested-dropdown'>
-                <MenuItem href='/changepassword'><ChangePassword /></MenuItem>
-                <MenuItem><Logout alert={props.alert} /></MenuItem>
-              </DropdownButton>
-            </div>
+            <Account alert={props.alert} />
           </li>
         </ul>)
 

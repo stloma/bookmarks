@@ -3,57 +3,13 @@
 @import '../components/AddBookmark/AddBookmark';
 @import '../components/NavLinks/NavLinks';
 @import '../components/BookmarkTable/BookmarkTable';
+@import '../components/App/App';
 
 .header {
   border-bottom: 1px solid silver; margin-bottom: 20px;
 }
 
-
 /* Tag cloud / Search */
-#search {
-  width: 100%;
-  max-width: 375px;
-  margin: auto;
-  height: 35px;
-  margin-bottom: 5em;
-  text-align: center;
-}
-
-#search input {
-  width: 100%;
-  padding: 8px;
-  font-size: 25px;
-  font-weight: bold;
-  border: 0;
-  background-color: inherit;
-  border-bottom: 3px solid;
-}
-
-#search input:focus {
-  outline: none;
-}
-
-#remove-search {
-  font-size: 25px;
-  float: right;
-}
-#remove-search:hover {
-  color: #d9230f;
-}
-#tagcloud .glyphicon {
-  margin-top: -10px;
-  margin-right: -8px;
-}
-#tagcloud {
-  text-align: center;
-  background-color: #005273;
-  width: 100%;
-  margin-bottom: 2em !important;
-  max-width: 700px;
-  margin: auto;
-  border: 0;
-  box-shadow: 1px 1px 5px #000;
-}
 
 .simple-cloud {
   padding: 1em;
@@ -62,7 +18,6 @@
 .tag-cloud-tag:hover {
   cursor: pointer;
 }
-
 
 .table-heading-sort {
   margin-right: 6px;
@@ -102,8 +57,6 @@ label {
 }
 
 #login input, #addbookmark input, #editbookmark input, #register button, #change-password button {
-  background-color: #999;
-  color: white;
   margin-bottom: 5px;
 }
 
@@ -186,7 +139,6 @@ label {
   padding-left: 2px;
   padding-right: 2px;
 }
-
 .tag-button:focus {
   outline: none;
 }
@@ -218,8 +170,6 @@ label {
   border: 0;
   color: #666;
   background: none;
-}
-.card-buttons button .glyphicon:hover {
 }
 .card-buttons button:hover {
   background: inherit;

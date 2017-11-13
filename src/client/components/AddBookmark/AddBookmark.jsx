@@ -4,6 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { sortBy as _sortBy } from 'lodash'
 import { Glyphicon } from 'react-bootstrap'
+import Loading from '../Loading/Loading'
 
 export default class AddBookmark extends React.Component {
   constructor() {
@@ -13,7 +14,8 @@ export default class AddBookmark extends React.Component {
       name: '',
       url: '',
       comment: '',
-      tags: ''
+      tags: '',
+      loading: false
     }
   }
 
@@ -101,6 +103,8 @@ export default class AddBookmark extends React.Component {
       }
     } catch (error) {
       this.props.alert({ messages: `Error in sending data to server: ${error.message}`, type: 'danger' })
+    } finally {
+      this.props.loadingToggle()
     }
   }
 
@@ -115,6 +119,7 @@ export default class AddBookmark extends React.Component {
   }
 
   handleSubmit = (event) => {
+    this.props.loadingToggle()
     event.preventDefault()
     const form = document.forms.SiteAdd
 
@@ -149,6 +154,7 @@ export default class AddBookmark extends React.Component {
     const recommendations = this.state.recommendations.map(item =>
       <div key={item.url}><a onClick={() => this.save(item)}>{item.name}</a></div>
     )
+    if (this.state.loading) { return <Loading /> }
 
     return (
       <div id='pattern'>
@@ -238,5 +244,6 @@ export default class AddBookmark extends React.Component {
 
 AddBookmark.propTypes = {
   history: PropTypes.object.isRequired,
+  loadingToggle: PropTypes.func.isRequired,
   alert: PropTypes.func.isRequired
 }
